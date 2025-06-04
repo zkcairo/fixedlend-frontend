@@ -4,9 +4,13 @@ import * as React from "react";
 import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
-
-import { cn } from "@/app/lib/utils";
 import { Dialog, DialogContent } from "@/app/components/ui/dialog";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
