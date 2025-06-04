@@ -1,0 +1,686 @@
+[
+  {
+    "name": "MyCodeImpl",
+    "type": "impl",
+    "interface_name": "fixedlend::IMyCode"
+  },
+  {
+    "name": "core::integer::u256",
+    "type": "struct",
+    "members": [
+      {
+        "name": "low",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "high",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "name": "fixedlend::datastructures::Price",
+    "type": "struct",
+    "members": [
+      {
+        "name": "rate",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "minimal_duration",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "maximal_duration",
+        "type": "core::integer::u64"
+      }
+    ]
+  },
+  {
+    "name": "core::bool",
+    "type": "enum",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "name": "fixedlend::IMyCode",
+    "type": "interface",
+    "items": [
+      {
+        "name": "deposit",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "withdraw",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "make_lend_offer",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "accepted_collateral",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "price",
+            "type": "fixedlend::datastructures::Price"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "disable_lend_offer",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "id_offer",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "make_borrow_offer",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "price",
+            "type": "fixedlend::datastructures::Price"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "disable_borrow_offer",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "id_offer",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "match_offer",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "lend_offer_id",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "borrow_offer_id",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "repay_offer",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "offer_id",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "liquidate_offer",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "offer_id",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "upgrade",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "new_class_hash",
+            "type": "core::starknet::class_hash::ClassHash"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "add_asset",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "asset",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "category",
+            "type": "core::felt252"
+          },
+          {
+            "name": "is_lend_asset",
+            "type": "core::bool"
+          },
+          {
+            "name": "price",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "ltv",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "add_user_point",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "balanceOf",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "asset",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "name": "FrontendImpl",
+    "type": "impl",
+    "interface_name": "fixedlend::IFrontend"
+  },
+  {
+    "name": "fixedlend::datastructures::BorrowOffer",
+    "type": "struct",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "is_active",
+        "type": "core::bool"
+      },
+      {
+        "name": "proposer",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "total_amount",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "amount_available",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "price",
+        "type": "fixedlend::datastructures::Price"
+      },
+      {
+        "name": "token_collateral",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "name": "core::array::Span::<fixedlend::datastructures::BorrowOffer>",
+    "type": "struct",
+    "members": [
+      {
+        "name": "snapshot",
+        "type": "@core::array::Array::<fixedlend::datastructures::BorrowOffer>"
+      }
+    ]
+  },
+  {
+    "name": "fixedlend::datastructures::LendOffer",
+    "type": "struct",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "is_active",
+        "type": "core::bool"
+      },
+      {
+        "name": "proposer",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "token",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "total_amount",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "amount_available",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "price",
+        "type": "fixedlend::datastructures::Price"
+      },
+      {
+        "name": "accepted_collateral",
+        "type": "core::integer::u256"
+      }
+    ]
+  },
+  {
+    "name": "core::array::Span::<fixedlend::datastructures::LendOffer>",
+    "type": "struct",
+    "members": [
+      {
+        "name": "snapshot",
+        "type": "@core::array::Array::<fixedlend::datastructures::LendOffer>"
+      }
+    ]
+  },
+  {
+    "name": "fixedlend::datastructures::Match",
+    "type": "struct",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "is_active",
+        "type": "core::bool"
+      },
+      {
+        "name": "lend_offer_id",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "borrow_offer_id",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "amount",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "amount_collateral",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "lending_rate",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "date_taken",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "borrowing_rate",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "minimal_duration",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "maximal_duration",
+        "type": "core::integer::u64"
+      }
+    ]
+  },
+  {
+    "name": "core::array::Span::<(fixedlend::datastructures::Match, core::starknet::contract_address::ContractAddress)>",
+    "type": "struct",
+    "members": [
+      {
+        "name": "snapshot",
+        "type": "@core::array::Array::<(fixedlend::datastructures::Match, core::starknet::contract_address::ContractAddress)>"
+      }
+    ]
+  },
+  {
+    "name": "fixedlend::IFrontend",
+    "type": "interface",
+    "items": [
+      {
+        "name": "frontend_actual_lending_amount",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "offer_id",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_actual_borrowing_amount",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "offer_id",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_get_all_offers",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "category",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "(core::array::Span::<fixedlend::datastructures::BorrowOffer>, core::array::Span::<fixedlend::datastructures::LendOffer>)"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_best_available_yield",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "category",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "(core::integer::u256, core::integer::u256)"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_available_to_lend_and_borrow",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "category",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "(core::integer::u256, core::integer::u256)"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_get_lend_offers_of_user",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "category",
+            "type": "core::felt252"
+          },
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::array::Span::<fixedlend::datastructures::LendOffer>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_get_borrow_offers_of_user",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "category",
+            "type": "core::felt252"
+          },
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::array::Span::<fixedlend::datastructures::BorrowOffer>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_get_all_matches_of_user",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "category",
+            "type": "core::felt252"
+          },
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "(core::array::Span::<(fixedlend::datastructures::Match, core::starknet::contract_address::ContractAddress)>, core::array::Span::<(fixedlend::datastructures::Match, core::starknet::contract_address::ContractAddress)>)"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_all_lend_offers_len",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::integer::u64"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_all_borrow_offers_len",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::integer::u64"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_get_ltv",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_needed_amount_of_collateral",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "maximal_duration",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "rate",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_get_user_points",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "frontend_get_total_points",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "name": "constructor",
+    "type": "constructor",
+    "inputs": []
+  },
+  {
+    "kind": "enum",
+    "name": "fixedlend::MyCode::Event",
+    "type": "event",
+    "variants": []
+  }
+]
