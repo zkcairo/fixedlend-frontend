@@ -11,7 +11,7 @@ export function getErc20Balance(erc20_address: string, user_address: string): Nu
         args: [user_address],
         watch: true,
     });
-    return value ? Number(value.balance.low) : 0;
+    return value ? Number((value as any).balance.low) : 0;
 }
 
 export function getProtocolBalance(erc20_address: string, user_address: string): Number {
