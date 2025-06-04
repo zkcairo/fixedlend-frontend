@@ -8,7 +8,7 @@ import rightArr from "../../../public/assets/right-arr.svg";
 import toast from "react-hot-toast";
 import Erc20Abi from "../abi/token.abi.json";
 import MyAbi from "../abi/mycontract.abi.json";
-import { USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, DAIV0_ADDRESS, NIMBORA_nsDAI_ADDRESS, SECONDS_PER_YEAR, PLATFORM_FEE_APY, CONTRACT_ADDRESS, SCALE_LTV, VALUE_1PERCENT_APY, ETH_ADDRESS, FETH_ADDRESS, ETH_CATEGORY } from '@/app/utils/constant';
+import { USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, DAIV0_ADDRESS, NIMBORA_nsDAI_ADDRESS, NIMBORA_nstUSD_ADDRESS, SECONDS_PER_YEAR, PLATFORM_FEE_APY, CONTRACT_ADDRESS, SCALE_LTV, VALUE_1PERCENT_APY, ETH_ADDRESS, FETH_ADDRESS, ETH_CATEGORY } from '@/app/utils/constant';
 import { SCALE_APY } from '@/app/utils/constant';
 import { formatTime } from '@/app/utils/date';
 import { useContractRead } from "@starknet-react/core";
