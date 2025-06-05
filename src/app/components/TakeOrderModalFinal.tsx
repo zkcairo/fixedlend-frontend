@@ -339,6 +339,23 @@ console.log("offer", offer);
         <hr className="border-[1px] border-white" />
         </>
         )}
+        {!isLend && (
+        <>
+        <div className="grid grid-cols-2 gap-x-5">
+          <div className="flex flex-col justify-center">
+          <h2>
+            Offer yield:<br/>
+          </h2>
+          </div>
+          <div className="flex flex-col justify-center">
+          <h2>
+            {isOpen && formatYield(Number(offer.price.rate))}% APR<br/>
+          </h2>
+          </div>
+        </div>
+        <hr className="border-[1px] border-white" />
+        </>
+        )}
 
         {isLend && (
         <ChooseAsset
@@ -388,7 +405,7 @@ console.log("offer", offer);
         <hr className="border-[1px] border-white my-5" />
         <SafetyBox
           valueamount={Number(inputAmount)}
-          valueyield={formatYield(offer.price.rate)}
+          valueyield={formatYield(offer.price.rate) * VALUE_1PERCENT_APY}
           minimal_duration={minimalDuration}
           maximal_duration={choosenDuration}
           type={isLend ? "borrow" : "lend"}

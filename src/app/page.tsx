@@ -68,7 +68,7 @@ export default function Home() {
       <div className="border border-gray-300 rounded-lg p-8 mt-5">
         <ul className="text-xl">
           <h4 className="text-4xl font-bold mb-8">Platform Statistics</h4>
-          <li>Current ETH yield (APR): {bestYieldEthBorrow}% lend / {bestYieldEthLend}% borrow</li>
+          <li>Current ETH yield (APR): {Number(bestYieldEthBorrow)-1}% lend / {Number(bestYieldEthLend)+1}% borrow</li>
           <li>Available on the ETH market: {volumeEthBorrow} ETH lend / {volumeEthLend} ETH borrow</li>
           {/* <li>Current USDC yield (APR): {Number(bestYieldUsdcLend)-1}% lend / {Number(bestYieldUsdcBorrow)+1}% borrow</li>
           <li>Available on USDC market: {volumeUsdcBorrow}$ to lend / {volumeUsdcLend}$ to borrow</li> */}

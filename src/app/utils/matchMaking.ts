@@ -52,7 +52,7 @@ export function matchLend(offer: any, all_offers: any[]) {
 }
 
 export function matchBorrow(offer: any, all_offers: any[]) {
-    let all_lend = sortByYield(all_offers[0], "lend");
+    let all_lend = sortByYield(all_offers[1], "lend");
     let amount = BigInt(offer.amount);
     let answer = [];
     let average_rate = BigInt(0);

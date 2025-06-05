@@ -212,14 +212,6 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
           Math.round(minimalDuration * 3600),
           Math.round(maximalDuration * 3600)
         ]);
-        // Token collateral & amount
-        // Mouais pas trop compris pourquoi yavait ça !!!! todo pq ya ces deux parametres la
-        if (activeTab === "Just borrow") {
-          calldata = calldata.concat([
-            choosenAsset,
-            (Number(amount) * (10**Number(choosenDecimals))) / 10**18, 0 // TODO
-          ]);
-        }
 
         call.push({
             contractAddress: contractAddress,
