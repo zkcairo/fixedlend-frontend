@@ -64,7 +64,7 @@ function MakeOrderModal({ isOpen, onClose, account, tokenUsed, category }: Props
     const isButtonDisabled = isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || !acceptDisclaimer || choosenAsset === "" || (isLend ? Number(inputAmount) > maxYouCanLend : Number(inputAmount) > maxYouCanBorrow) || (maximalDuration - minimalDuration < 24);
 
     return (
-        <GenericModal isOpen={isOpen} onClose={closeModal} animate={animate} className="w-[90vw] md:w-[45rem] max-h-[90vh] p-6">
+        <GenericModal isOpen={isOpen} onClose={closeModal} animate={animate} className="w-[90vw] md:w-[50rem] max-h-[90vh] p-6">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-3xl font-bold tracking-widest">Make an Offer</h1>
                 <button onClick={closeModal} className="border border-green-500 w-8 h-8 flex items-center justify-center hover:bg-green-500 hover:text-black transition-all">X</button>

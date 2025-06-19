@@ -103,7 +103,7 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
       isOpen={isOpen}
       onClose={closeModal}
       animate={animate}
-      className="w-[90vw] md:w-[45rem] bg-black/80 border border-green-500 shadow-[0_0_20px_rgba(0,255,0,0.5),inset_0_0_15px_rgba(0,255,0,0.3)] backdrop-blur-sm p-6"
+      className="w-[90vw] md:w-[50rem] max-h-[90vh] p-6"
     >
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold tracking-widest">{activeTab} {tokenUsed}</h1>
@@ -111,7 +111,6 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
           X
         </button>
       </div>
-
       <div className="flex justify-center gap-4 mb-6">
         {["Deposit", "Withdraw"].map((tab) => (
           <button key={tab} className={activeTab === tab ? "buttonselected" : ""} onClick={() => setActiveTab(tab)}>
