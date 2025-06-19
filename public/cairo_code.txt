@@ -1,0 +1,176 @@
+assert!(self.category_information.read(token) != 0, "This token cannot be lent nor be used as a colletaral");
+let caller = get_caller_address();
+let mut current_deposit = self.assets_user.entry(caller).read(token);
+current_deposit += amount;
+self.assets_user.entry(caller).write(token, current_deposit);
+let erc20 = IERC20Dispatcher { contract_address: token };
+let contract = get_contract_address();
+let amount_asset = to_assets_decimals(token, amount);
+assert!(erc20.allowance(caller, contract) >= amount_asset, "Not enough allowance to make this deposit");
+erc20.transferFrom(caller, contract, amount_asset);
+assert!(self.category_information.read(token) != 0, "This token cannot be lent nor be used as a colletaral");
+let caller = get_caller_address();
+let mut current_deposit = self.assets_user.entry(caller).read(token);
+assert!(current_deposit >= amount, "Not enough balance to withdraw");
+current_deposit -= amount;
+self.assets_user.entry(caller).write(token, current_deposit);
+let erc20 = IERC20Dispatcher { contract_address: token };
+let amount_asset = to_assets_decimals(token, amount);
+erc20.transfer(caller, amount_asset);
+assert!(self.category_information.read(token) != 0, "This token has no category - so cannot be lent");
+assert!(self.assets_lender.read(token), "This token cannot be lent");
+assert_validity_of_price(price);
+let caller = get_caller_address();
+let lend_offer = LendOffer {
+id: self.lend_offers.len(),
+is_active: true,
+proposer: caller,
+token,
+total_amount: amount,
+amount_available: amount,
+price,
+accepted_collateral,
+self.lend_offers.push(lend_offer);
+let caller = get_caller_address();
+assert!(caller == self.lend_offers.at(id_offer).read().proposer, "You can only disable your own lending offer");
+let mut lend_offer = self.lend_offers.at(id_offer).read();
+assert!(lend_offer.is_active, "The lending offer is already disabled");
+lend_offer.is_active = false;
+self.lend_offers.at(id_offer).write(lend_offer);
+assert!(self.category_information.read(token) != 0, "This token has no category - so cannot be used as a collateral");
+assert!(self.assets_borrower.read(token), "This token is not a borrow asset");
+assert_validity_of_price(price);
+let caller = get_caller_address();
+let borrow_offer = BorrowOffer {
+id: self.borrow_offers.len(),
+is_active: true,
+proposer: caller,
+total_amount: amount,
+amount_available: amount,
+price,
+token_collateral: token,
+self.borrow_offers.push(borrow_offer);
+let caller = get_caller_address();
+assert!(caller == self.borrow_offers.at(id_offer).read().proposer, "You can only disable your own borrowing offer");
+let mut borrow_offer = self.borrow_offers.at(id_offer).read();
+assert!(borrow_offer.is_active, "The borrowing offer is already disabled");
+borrow_offer.is_active = false;
+self.borrow_offers.at(id_offer).write(borrow_offer);
+let mut lend_offer = self.lend_offers.at(lend_offer_id).read();
+let lender = lend_offer.proposer;
+let lend_token = lend_offer.token;
+let mut borrow_offer = self.borrow_offers.at(borrow_offer_id).read();
+let borrower = borrow_offer.proposer;
+let borrow_token = borrow_offer.token_collateral;
+assert!(lend_offer.is_active, "The lending offer is not active");
+assert!(borrow_offer.is_active, "The borrowing offer is not active");
+assert!(self.category_information.read(lend_offer.token) == self.category_information.read(borrow_offer.token_collateral),
+"The assets are not in the same category, the match can't be made");
+assert!(borrow_offer.price.rate >= lend_offer.price.rate + constants::APR_PROTOCOL_FEE,
+"Offer price are not compatible, you need borrow_rate >= lending_rate + platform fee");
+assert!(amount <= lend_offer.amount_available, "Not enough demand available in the lend offer");
+assert!(amount <= borrow_offer.amount_available, "Not enough demand available in the borrow offer");
+let price_match = Price {
+rate: lend_offer.price.rate,
+minimal_duration: max2(lend_offer.price.minimal_duration, borrow_offer.price.minimal_duration),
+maximal_duration: min2(lend_offer.price.maximal_duration, borrow_offer.price.maximal_duration)
+assert_validity_of_price(price_match);
+let current_date = get_block_timestamp();
+let mut new_match = Match {
+id: self.current_matches.len(),
+is_active: true,
+lend_offer_id: lend_offer.id,
+borrow_offer_id: borrow_offer.id,
+amount: amount,
+amount_collateral: 0,
+lending_rate: price_match.rate,
+date_taken: current_date,
+borrowing_rate: price_match.rate + constants::APR_PROTOCOL_FEE,
+minimal_duration: price_match.minimal_duration,
+maximal_duration: price_match.maximal_duration
+assert!(self.assets_user.entry(lend_offer.proposer).read(lend_token) >= amount,
+"The lender did not deposit enough asset to lend for this offer");
+let max_to_repay = max_to_repay(new_match);
+let price_collateral = self.price_information.entry(borrow_offer.token_collateral).read();
+let ltv_collateral = self.ltv_information.entry(borrow_offer.token_collateral).read();
+let collateral_amount = inverse_value_of_asset(max_to_repay, price_collateral, ltv_collateral);
+assert!(self.assets_user.entry(borrow_offer.proposer).read(borrow_token) >= collateral_amount,
+"The borrower did not deposit enough collateral for this offer");
+new_match.amount_collateral = collateral_amount;
+self.current_matches.push(new_match);
+lend_offer.amount_available -= amount;
+self.lend_offers.at(lend_offer_id).write(lend_offer);
+borrow_offer.amount_available -= amount;
+self.borrow_offers.at(borrow_offer_id).write(borrow_offer);
+let lender_balance = self.assets_user.entry(lender).read(lend_token);
+self.assets_user.entry(lender).write(lend_token, lender_balance - amount);
+let borrow_balance_lend = self.assets_user.entry(borrower).read(lend_token);
+self.assets_user.entry(borrower).write(lend_token, borrow_balance_lend + amount);
+let borrower_balance_borrow = self.assets_user.entry(borrower).read(borrow_token);
+self.assets_user.entry(borrower).write(borrow_token, borrower_balance_borrow - collateral_amount);
+let mut match_offer = self.current_matches.at(offer_id).read();
+let amount = match_offer.amount;
+let lend_offer_id = match_offer.lend_offer_id;
+let borrow_offer_id = match_offer.borrow_offer_id;
+let mut lend_offer = self.lend_offers.at(lend_offer_id).read();
+let lender = lend_offer.proposer;
+let lend_token = lend_offer.token;
+let mut borrow_offer = self.borrow_offers.at(borrow_offer_id).read();
+let borrower = borrow_offer.proposer;
+let borrow_token = borrow_offer.token_collateral;
+assert!(get_caller_address() == borrower, "Only the borrower can repay its debt");
+assert!(match_offer.is_active, "This offer is no longer active");
+let current_time = get_block_timestamp();
+assert!(current_time >= match_offer.date_taken + match_offer.minimal_duration,
+"You cannot repay the lend this early wait for the minimal time");
+assert!(current_time <= match_offer.date_taken + match_offer.maximal_duration,
+"It is too late to repay this offer please liquidate instead");
+let (interest_lender, fee) = interest_to_repay(match_offer, current_time);
+let borrower_balance_lend = self.assets_user.entry(borrower).read(lend_token);
+assert!(borrower_balance_lend >= amount + interest_lender + fee, "Not enough balance to repay the offer");
+self.assets_user.entry(borrower).write(lend_token, borrower_balance_lend - amount - interest_lender - fee);
+let lender_balance = self.assets_user.entry(lender).read(lend_token);
+self.assets_user.entry(lender).write(lend_token, lender_balance + amount + interest_lender);
+let contract_address = get_contract_address();
+let contract_balance = self.assets_user.entry(contract_address).read(lend_token);
+self.assets_user.entry(contract_address).write(lend_token, contract_balance + fee);
+let borrower_balance_borrow = self.assets_user.entry(borrower).read(borrow_token);
+self.assets_user.entry(borrower).write(borrow_token, borrower_balance_borrow + match_offer.amount_collateral);
+match_offer.is_active = false;
+self.current_matches.at(offer_id).write(match_offer);
+let total_amount = amount + interest_lender + fee;
+increase_user_point(ref self, lender, total_amount, lend_token);
+increase_user_point(ref self, borrower, total_amount, lend_token);
+lend_offer.amount_available += amount + interest_lender;
+self.lend_offers.at(lend_offer_id).write(lend_offer);
+borrow_offer.amount_available += amount;
+self.borrow_offers.at(borrow_offer_id).write(borrow_offer);
+let mut match_offer = self.current_matches.at(offer_id).read();
+let amount = match_offer.amount;
+let lend_offer_id = match_offer.lend_offer_id;
+let borrow_offer_id = match_offer.borrow_offer_id;
+let mut lend_offer = self.lend_offers.at(lend_offer_id).read();
+let lender = lend_offer.proposer;
+let lend_token = lend_offer.token;
+let mut borrow_offer = self.borrow_offers.at(borrow_offer_id).read();
+let borrower = borrow_offer.proposer;
+let borrow_token = borrow_offer.token_collateral;
+assert!(match_offer.is_active, "This offer is no longer active");
+let current_time = get_block_timestamp();
+assert!(current_time >= match_offer.date_taken + match_offer.maximal_duration,
+"You cannot liquidation this early wait for the maximal time");
+let (interest_lender, fee) = interest_to_repay(match_offer, current_time);
+let borrower_balance = self.assets_user.entry(borrower).read(lend_token);
+if borrower_balance >= amount + interest_lender + fee {
+let lender_balance = self.assets_user.entry(lender).read(lend_token);
+self.assets_user.entry(lender).write(lend_token, lender_balance + amount + interest_lender + fee);
+let borrower_balance_lend = self.assets_user.entry(borrower).read(lend_token);
+self.assets_user.entry(borrower).write(lend_token, borrower_balance_lend - amount - interest_lender - fee);
+let borrower_balance_borrow = self.assets_user.entry(borrower).read(borrow_token);
+self.assets_user.entry(borrower).write(borrow_token, borrower_balance_borrow + match_offer.amount_collateral);
+let lender_balance = self.assets_user.entry(lender).read(borrow_token);
+self.assets_user.entry(lender).write(borrow_token, lender_balance + match_offer.amount_collateral);
+let total_amount = amount + interest_lender + fee;
+increase_user_point(ref self, lender, total_amount, lend_token);
+match_offer.is_active = false;
+self.current_matches.at(offer_id).write(match_offer);

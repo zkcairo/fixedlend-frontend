@@ -1,111 +1,81 @@
-import React from "react";
+"use client";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
 
 const OrderBookGraph = ({ buyOrders, sellOrders }: any) => {
-  // Convert order data into cumulative totals for graph
-  const processOrders = (orders: any, type: any) => {
+  const processOrders = (orders: any[], type: "buy" | "sell") => {
     let cumulativeVolume = 0;
     return orders
-      .sort((a: any, b: any) => (type === "sell" ? a.yield - b.yield : b.yield - a.yield))
-      .map((order: any) => {
+      .sort((a, b) => (type === "sell" ? a.yield - b.yield : b.yield - a.yield))
+      .map((order) => {
         cumulativeVolume += order.volume;
         return { x: order.yield, y: cumulativeVolume };
       })
-      .sort((a: any, b: any) => (a.x - b.x))
+      .sort((a, b) => a.x - b.x);
   };
 
   let buyData = processOrders(buyOrders, "buy");
   let sellData = processOrders(sellOrders, "sell");
 
-  let left = buyData.map((data: any) => data.x);
-  const right = sellData.map((data: any) => data.x);
-  
-  let labels = left.concat(right);
-
   if (buyData.length > 0 && sellData.length > 0) {
     let middle_value = (sellData[0].x + buyData[buyData.length - 1].x) / 2;
     buyData.push({x: middle_value, y: 0});
     sellData.unshift({x: middle_value, y: 0});
-    labels = left.concat([middle_value]).concat(right);
   }
 
-  console.log(buyData);
-  console.log(sellData);
-
-  
   const data = {
-    labels: labels,
+    // labels: labels,
     datasets: [
       {
-        stepped: 'after',
-        label: "Borrow Orders",
-        data: buyData, //buyData.map(data => data.y).concat(Array.from({length: 2 + sellData.length}, (_, i) => 0)),
-        backgroundColor: "rgba(0, 200, 0, 0.2)",
-        borderColor: "rgba(0, 200, 0, 1)",
+        stepped: true,
+        label: "Borrow Orders (Bids)",
+        data: buyData.reverse(),
+        backgroundColor: "rgba(255, 0, 0, 0.2)",
+        borderColor: "rgba(255, 80, 80, 1)",
+        pointBackgroundColor: "rgba(255, 80, 80, 1)",
+        pointBorderColor: "#0f0",
+        fill: "start",
       },
       {
-        stepped: 'before',
-        label: "Lend Orders",
-        data: sellData, //Array.from({length: 2 + buyData.length}, (_, i) => 0).concat(sellData.map(data => data.y)),
-        backgroundColor: "rgba(200, 0, 0, 0.2)",
-        borderColor: "rgba(200, 0, 0, 1)",
+        stepped: true,
+        label: "Lend Orders (Asks)",
+        data: sellData,
+        backgroundColor: "rgba(0, 255, 0, 0.2)",
+        borderColor: "rgba(80, 255, 80, 1)",
+        pointBackgroundColor: "rgba(80, 255, 80, 1)",
+        pointBorderColor: "#fff",
+        fill: "start",
       },
     ],
   };
 
   const options = {
-    pointStyle: 'circle',
-    pointRadius: 5,
-    pointHoverRadius: 10,
-    fill: true,
+    pointRadius: 3,
+    pointHoverRadius: 6,
     responsive: true,
     maintainAspectRatio: false,
     scales: {
       x: {
-        title: {
-          display: true,
-          text: "Yield, in % (APR)",
-          color: "#ffffff", // Ensure the text is visible on dark backgrounds
-        },
-        ticks: {
-          color: "#ffffff", // Ensure the ticks are visible
-        },
+        type: 'linear',
+        title: { display: true, text: "Yield (% APR)", color: "#0f0" },
+        ticks: { color: "#0f0", font: { family: "'Share Tech Mono', monospace" } },
+        grid: { color: "rgba(0, 255, 0, 0.1)" },
       },
       y: {
-        title: {
-          display: true,
-          text: "Cumulative Volume",
-          color: "#ffffff", // Ensure the text is visible on dark backgrounds
-        },
-        ticks: {
-          color: "#ffffff", // Ensure the ticks are visible
-        },
+        title: { display: true, text: "Cumulative Volume", color: "#0f0" },
+        ticks: { color: "#0f0", font: { family: "'Share Tech Mono', monospace" } },
+        grid: { color: "rgba(0, 255, 0, 0.1)" },
       },
     },
     plugins: {
-      title: {
-        display: true,
-        text: "Order Book",
-        color: "#ffffff", // Ensure the title text is visible
-        font: {
-          size: 20, // Increase the font size
-        },
-      },
-      legend: {
-        position: "top",
-        labels: {
-          color: "#ffffff", // Ensure the legend text is visible
-        },
-      },
+      title: { display: true, text: "Order Book Depth", color: "#0f0", font: { size: 18, family: "'Share Tech Mono', monospace" } },
+      legend: { position: "top", labels: { color: "#0f0", font: { family: "'Share Tech Mono', monospace" } } },
     },
   };
 
-  return (
-      <Line data={data as any} options={options as any} />
-  );
+  return <Line data={data as any} options={options as any} />;
 };
 
 export default OrderBookGraph;

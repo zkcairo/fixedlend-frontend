@@ -32,10 +32,10 @@ const ChooseAsset = ({ type, baseAsset, address, above_choosenAsset, set_above_c
   return (
     <div className="grid grid-cols-2 gap-x-5">
       <div className="flex flex-col justify-center">
-      <h2>{type === "lend" ? "Choose the asset you want to lend" : "Choose your collateral"}
+      <label>{type === "lend" ? "Choose the asset you want to lend" : "Choose your collateral"}
         {type === "lend" ? "" :
         (<><br/><h2><a target="_blank" href="https://docs.FixedLend.com/FixedLend/accepted-collaterals"><u>List of accepted collateral</u></a></h2></>)}
-      </h2>
+      </label>
       </div>
       <div className="flex grid-col justify-center">
         {(type === "lend" ? filteredLend : filteredCollaterals).map((tab) => (

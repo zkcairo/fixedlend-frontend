@@ -1,51 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+/* --- Base & Body --- */
 body {
     background-color: #000;
     color: #0f0;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Hide body scrollbars */
 }
 
-.scroll {
-    overflow-y: scroll;
+/* --- Matrix Rain Canvas --- */
+.matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
-button {
-    background-color: #000;
-    border: 2px solid #0f0;
-    color: #0f0;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+/* --- Content Wrapper & Scanlines --- */
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: radial-gradient(circle, rgba(0, 20, 0, 0.6) 0%, rgba(0,0,0,0.8) 70%);
+    animation: fadeIn 1.5s ease-in-out;
 }
 
-button:hover {
-    background-color: #0f0;
-    color: #000;
+.content-wrapper::after {
+    content: ' ';
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 3px, 4px 100%;
+    pointer-events: none;
+    animation: scanline 10s linear infinite;
 }
 
-.buttonselected {
-    background-color: #0f0;
-    color: #000;
+/* --- Typography & Glow --- */
+h1, h2, h3, h4 {
+    text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 15px #0f0;
+    letter-spacing: 0.05em;
+}
+
+p, a, button, li, span, div, input {
+    text-shadow: 0 0 2px rgba(0, 255, 0, 0.7);
 }
 
 a {
     color: #0f0;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    transition: all 0.2s ease-in-out;
+}
+a:hover {
+    color: #9f9;
+    text-shadow: 0 0 8px #0f0;
 }
 
+/* --- Buttons --- */
+button {
+    background-color: transparent;
+    border: 1px solid #0f0;
+    color: #0f0;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s ease-in-out;
+    box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.2), 0 0 5px rgba(0, 255, 0, 0.2);
+}
+
+button:hover:not(:disabled) {
+    background-color: #0f0;
+    color: #000;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.8);
+    text-shadow: none;
+}
+
+button.buttonselected {
+    background-color: #0f0;
+    color: #000;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.8);
+    text-shadow: none;
+}
+
+button:disabled {
+    border-color: #053805;
+    color: #053805;
+    text-shadow: none;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+/* --- Inputs --- */
 input {
     background-color: #111;
     border: 1px solid #0f0;
     color: #0f0;
     padding: 5px;
+    font-family: inherit;
+    box-shadow: inset 0 0 8px rgba(0, 255, 0, 0.3);
 }
 
 input[type="range"] {
     -webkit-appearance: none;
     width: 100%;
-    background-color: #111;
-    border: 1px solid #0f0;
+    background-color: transparent;
+    border: none;
     height: 5px;
     cursor: pointer;
-    border-radius: 10px; /* Rounded border for the track */
+    background-image: linear-gradient(#0f0, #0f0);
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -54,9 +132,9 @@ input[type="range"]::-webkit-slider-thumb {
     height: 15px;
     background-color: #0f0;
     border: 1px solid #000;
-    border-radius: 50%; /* Rounded border for the thumb */
+    border-radius: 0;
+    box-shadow: 0 0 10px #0f0;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -64,24 +142,18 @@ input[type="range"]::-moz-range-thumb {
     height: 15px;
     background-color: #0f0;
     border: 1px solid #000;
-    border-radius: 50%; /* Rounded border for the thumb */
+    border-radius: 0;
+    box-shadow: 0 0 10px #0f0;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-input[type="range"]::-ms-thumb {
-    width: 15px;
-    height: 15px;
-    background-color: #0f0;
-    border: 1px solid #000;
-    border-radius: 50%; /* Rounded border for the thumb */
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-input[type="range"]::-webkit-slider-thumb:hover,
-input[type="range"]::-moz-range-thumb:hover,
-input[type="range"]::-ms-thumb:hover {
-    background-color: #000;
-    border-color: #0f0;
+@keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100vh; }
 }

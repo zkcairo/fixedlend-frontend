@@ -1,22 +1,15 @@
 "use client";
+
 import GenericModal from "./GenericModal";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Call } from "starknet";
 import spinner from "../../../public/assets/spinner.svg";
-import rightArr from "../../../public/assets/right-arr.svg";
-import toast from "react-hot-toast";
-import Erc20Abi from "../abi/token.abi.json";
-import MyAbi from "../abi/mycontract.abi.json";
-import { USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, DAIV0_ADDRESS, VALUE_1PERCENT_APY, PLATFORM_FEE_APY, CONTRACT_ADDRESS } from '@/app/utils/constant';
-import { SCALE_APY } from '@/app/utils/constant';
-import { formatCurrency, formatTime, formatYield } from "@/app/utils/format";
-import { useContractRead } from "@starknet-react/core";
-import { getAllLend, getAllCollateral, getAllBalance, normalizeAmountLend, normalizeAmountBorrow, prettyNameFromAddress, getDecimalsOfAsset, getBalance } from "@/app/utils/erc20";
-import ChooseAsset from "./ChooseAsset";
-import SafetyBox from "./SafeParametersJustLendBorrow";
-import { matchBorrow, matchLend } from "../utils/matchMaking";
+import { CONTRACT_ADDRESS } from '@/app/utils/constant';
+import { prettyNameFromAddress } from "../utils/erc20";
+import { getAllLend, getAllCollateral } from "@/app/utils/erc20";
 import { getErc20Balance, getProtocolBalance } from "../utils/fetch";
+import toast from "react-hot-toast";
 
 type Props = {
   isOpen: boolean;
@@ -29,14 +22,11 @@ type Props = {
 
 function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, category, alloffers }: Props) {
   
-  const [valueYield, setValueYield] = useState<number>(10);
-  const [minimalDuration, setMinimalDuration] = useState<number>(1);
-  const [maximalDuration, setMaximalDuration] = useState<number>(100);
   const [inputAmount, setInputAmount] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Deposit");
-  
-  const [animate, setAnimate] = useState(false);
+  const [choosenAsset, setChoosenAsset] = useState("ETH");
   const [loading, setLoading] = useState<boolean>(false);
+  const [animate, setAnimate] = useState(false);
 
   const contractAddress = CONTRACT_ADDRESS;
 
@@ -45,244 +35,134 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
   const choosenDecimalsLend = lendasset[1];
   const tokenNameLend = prettyNameFromAddress(choosenAssetLend);
 
-  const borrowasset = getAllCollateral(tokenUsed)[0];
-  const choosenAssetBorrow = borrowasset[0].toString();
-  const choosenDecimalsBorrow = borrowasset[1];
-  const tokenNameCollateral = prettyNameFromAddress(choosenAssetBorrow);
+  const collateralAsset = getAllCollateral(tokenUsed)[0];
+  const choosenAssetCollateral = collateralAsset[0].toString();
+  const choosenDecimalsCollateral = collateralAsset[1];
+  const tokenNameCollateral = prettyNameFromAddress(choosenAssetCollateral);
 
-  const [choosenAsset, setChoosenAsset] = useState("ETH");
-
+  // Balances
   const scale = 10000;
   const account_balance_eth = Math.round(scale * Number(getErc20Balance(choosenAssetLend, account.address)) / 10**18) / scale;
-  console.log("Account balance", account_balance_eth);
-
   const protocol_balance_eth = Math.round(scale * Number(getProtocolBalance(choosenAssetLend, account.address)) / 10**18) / scale;
-  console.log("Protocol balance", protocol_balance_eth);
-
-  const account_balance_feth = Math.round(scale * Number(getErc20Balance(choosenAssetBorrow, account.address)) / 10**18) / scale;
-  console.log("Account balance", account_balance_feth);
-
-  const protocol_balance_feth = Math.round(scale * Number(getProtocolBalance(choosenAssetBorrow, account.address)) / 10**18) / scale;
-  console.log("Protocol balance", protocol_balance_feth);
-
-  const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setAnimate(false);
-    setTimeout(() => {
-      onClose();
-    }, 400);
-  };
+  const account_balance_collateral = Math.round(scale * Number(getErc20Balance(choosenAssetCollateral, account.address)) / 10**18) / scale;
+  const protocol_balance_collateral = Math.round(scale * Number(getProtocolBalance(choosenAssetCollateral, account.address)) / 10**18) / scale;
 
   useEffect(() => {
-    if (isOpen) {
-      setAnimate(true);
-    } else {
-      setAnimate(false);
-    }
+    if (isOpen) setAnimate(true);
   }, [isOpen]);
 
+  const closeModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) e.stopPropagation();
+    setAnimate(false);
+    setTimeout(() => onClose(), 400);
+  };
+
   async function handleExecute() {
-    console.log("handle execute");
+    setLoading(true);
     let success = false;
     try {
-      setLoading(true);
+      const functionName = activeTab === "Deposit" ? "deposit" : "withdraw";
+      const asset = choosenAsset === "ETH" ? choosenAssetLend : choosenAssetCollateral;
+      const decimals = choosenAsset === "ETH" ? choosenDecimalsLend : choosenDecimalsCollateral;
+      const amount = BigInt(Math.floor(Number(inputAmount) * (10 ** Number(decimals))));
 
-      let functionName = "";
-      functionName = activeTab === "Deposit" ? "deposit" : "withdraw";
+      let calls: Call[] = [];
 
-      let call = [];
-      let amount = Number(inputAmount)*(10**Number(choosenDecimalsLend));
-      let asset = choosenAsset === "ETH" ? choosenAssetLend : choosenAssetBorrow;
-      let decimals = choosenAsset === "ETH" ? choosenDecimalsLend : choosenDecimalsBorrow;
       if (activeTab === "Deposit") {
-        call.push({
+        calls.push({
           contractAddress: asset,
-          calldata: [contractAddress, amount, 0].map((value) => String(value)),
-          entrypoint: "approve"
-        })
-    }
-    call.push({
+          entrypoint: "approve",
+          calldata: [contractAddress, amount.toString(), "0"],
+        });
+      }
+
+      calls.push({
         contractAddress: contractAddress,
-        calldata: [asset, normalizeAmountLend(amount, decimals), 0].map((value) => String(value)),
-        entrypoint: functionName
-    });
-      console.log("call", call);
-
-      // Sert à rien?
-      const maxFee = BigInt("0");
-      //const { suggestedMaxFee: maxFee } = await account.estimateInvokeFee(call);
-      console.log("maxFee", maxFee);
-
-      const { transaction_hash: transferTxHash } = await account.execute(call, { maxFee });
-      console.log("hash", transferTxHash);
-
-      const transactionReponse = await account.waitForTransaction(
-        transferTxHash
-      );
-      console.log("response", transactionReponse);
-
-      toast.success(activeTab + " has been processed placed", {
-        duration: 2000,
+        entrypoint: functionName,
+        calldata: [asset, amount.toString(), "0"],
       });
+
+      const { transaction_hash } = await account.execute(calls);
+      await account.waitForTransaction(transaction_hash);
+
+      toast.success(`${activeTab} has been processed.`, { duration: 3000 });
       success = true;
     } catch (err: any) {
-      toast.error("An error occurred! Please try again.", { duration: 2000 });
-      console.log(err.message);
+      toast.error("An error occurred! Please try again.", { duration: 3000 });
+      console.error(err.message);
     } finally {
       setLoading(false);
-      if (success)
-        setTimeout(() => {
-          onClose();
-        }, 400);
+      if (success) closeModal();
     }
   }
+
+  const isButtonDisabled = isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || Number(inputAmount) > (activeTab === "Deposit" ? (choosenAsset === "ETH" ? account_balance_eth : account_balance_collateral) : (choosenAsset === "ETH" ? protocol_balance_eth : protocol_balance_collateral));
 
   return (
     <GenericModal
       isOpen={isOpen}
       onClose={closeModal}
       animate={animate}
-      className="w-[90vw] mx-auto md:h-fit md:w-[45rem] text-white py-4 px-5 relative bg-black max-h-[90vh]"
+      className="w-[90vw] md:w-[45rem] bg-black/80 border border-green-500 shadow-[0_0_20px_rgba(0,255,0,0.5),inset_0_0_15px_rgba(0,255,0,0.3)] backdrop-blur-sm p-6"
     >
-      <div className="absolute right-5 top-4">
-        <button
-          onClick={(e) => {
-            closeModal(e);
-            e.stopPropagation();
-            }}
-            className="w-8 h-8 grid place-content-center rounded-full bg-outline-grey"
-          >
-            <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            >
-            <path
-              fill="currentColor"
-              d="m6.4 18.308l-.708-.708l5.6-5.6l-5.6-5.6l.708-.708l5.6 5.6l5.6-5.6l.708.708l-5.6 5.6z"
-            />
-            </svg>
-          </button>
-          </div>
-            <h1 className="text-[24px] mb-2 font-semibold">{activeTab} {tokenUsed}:</h1>
-            <div className="flex justify-around mb-4 flex-wrap">
-            {["Deposit", "Withdraw"].map((tab) => (
-            <button
-            key={tab}
-            className={`text-base px-4 py-2 ${activeTab === tab ? "buttonselected" : "bg-base"} rounded disabled:bg-gray-300 disabled:text-white`}
-            onClick={() => {setActiveTab(tab)}}
-            disabled={tab === "Just borrow"}
-            >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-          </div>
-
-        <div className="scroll">
-        <div className="flex flex-col gap-y-5">
-        <div className="grid grid-cols-2 gap-x-5">
-          <div className="flex flex-col justify-center">
-          <h2>Amount of {tokenNameLend} in your wallet</h2>
-          </div>
-          <div className="flex flex-col justify-center">
-          <h2>{account_balance_eth} {tokenNameLend}</h2>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-5">
-          <div className="flex flex-col justify-center">
-          <h2>Amount of {tokenNameLend} in the protocol</h2>
-          </div>
-          <div className="flex flex-col justify-center">
-          <h2>{protocol_balance_eth} {tokenNameLend}</h2>
-          </div>
-        </div>
-
-        <hr className="border-[1px] border-white" />
-
-        <div className="grid grid-cols-2 gap-x-5">
-          <div className="flex flex-col justify-center">
-          <h2>Amount of {tokenNameCollateral} in your wallet</h2>
-          </div>
-          <div className="flex flex-col justify-center">
-          <h2>{account_balance_feth} {tokenNameCollateral}</h2>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-5">
-          <div className="flex flex-col justify-center">
-          <h2>Amount of {tokenNameCollateral} in the protocol</h2>
-          </div>
-          <div className="flex flex-col justify-center">
-          <h2>{protocol_balance_feth} {tokenNameCollateral}</h2>
-          </div>
-        </div>
-
-        <hr className="border-[1px] border-white" />
-
-
-        <div className="grid grid-cols-2 gap-x-5">
-          <div className="flex flex-col justify-center">
-          <h2>Asset to {activeTab.toLowerCase()}</h2>
-          </div>
-          <div className="grid grid-cols-2 gap-x-5">
-            <div className="flex flex-col justify-center">
-              <button
-                className={`text-base px-4 py-2 ${choosenAsset === "ETH" ? "buttonselected" : "bg-base"} rounded`}
-                onClick={() => setChoosenAsset("ETH")}
-              >{tokenNameLend}</button>
-            </div>
-            <div className="flex flex-col justify-center">
-              <button
-                className={`text-base px-4 py-2 ${choosenAsset === "FETH" ? "buttonselected" : "bg-base"} rounded`}
-                onClick={() => setChoosenAsset("FETH")}
-              >{tokenNameCollateral}</button>
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-5">
-          <div className="flex flex-col justify-center">
-          <h2>Amount you want to {activeTab.toLocaleLowerCase()} in {choosenAsset}</h2>
-          </div>
-          <div className="flex flex-col justify-center">
-          <input
-            type="text"
-            className="w-full rounded text-base outline-none border-[2px]"
-            value={inputAmount}
-            onChange={(e) => setInputAmount(e.target.value)}
-            // onChange={(e) => {if (Number(e.target.value) > 0 || e.target.value === "")
-            //   {setInputAmount(Math.min(Number(e.target.value), activeTab === "Deposit" ? Math.floor(account_balance_eth) : Math.floor(protocol_balance_eth)).toString())}
-            // }}
-          />
-          </div>
-        </div>
-
-        </div>
-
-        </div>
-
-        <button
-        className="w-full mt-7 py-3 rounded font-medium flex items-center gap-x-2 justify-center disabled:cursor-not-allowed disabled:bg-slate-300"
-        disabled={
-            isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || Number(inputAmount) > (activeTab === "Deposit" ? (choosenAsset === "ETH" ? account_balance_eth : account_balance_feth) : (choosenAsset === "ETH" ? protocol_balance_eth : protocol_balance_feth))
-        }
-        title={
-            isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || Number(inputAmount) > (activeTab === "Deposit" ? (choosenAsset === "ETH" ? account_balance_eth : account_balance_feth) : (choosenAsset === "ETH" ? protocol_balance_eth : protocol_balance_feth))
-            ? "Please enter a valid amount"
-            : activeTab + " " + choosenAsset
-        }
-        onClick={async (e) => {
-            e.preventDefault();
-            await handleExecute();
-        }}
-        >
-        {activeTab} {choosenAsset}
-        <Image
-          src={loading ? spinner : rightArr}
-          alt={loading ? "loading" : "right arrow"}
-          height={16}
-          width={16}
-        />
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold tracking-widest">{activeTab} {tokenUsed}</h1>
+        <button onClick={closeModal} className="border border-green-500 w-8 h-8 flex items-center justify-center hover:bg-green-500 hover:text-black transition-all">
+          X
         </button>
+      </div>
 
+      <div className="flex justify-center gap-4 mb-6">
+        {["Deposit", "Withdraw"].map((tab) => (
+          <button key={tab} className={activeTab === tab ? "buttonselected" : ""} onClick={() => setActiveTab(tab)}>
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-y-4 text-lg">
+        {/* Balances Panel */}
+        <div className="border border-green-500/50 p-4 flex flex-col gap-2">
+            <h3 className="text-xl tracking-wider mb-2">// BALANCES</h3>
+            <div className="flex justify-between"><span>{tokenNameLend} in Wallet:</span><span>{account_balance_eth}</span></div>
+            <div className="flex justify-between"><span>{tokenNameLend} in Protocol:</span><span>{protocol_balance_eth}</span></div>
+            <div className="flex justify-between mt-2"><span>{tokenNameCollateral} in Wallet:</span><span>{account_balance_collateral}</span></div>
+            <div className="flex justify-between"><span>{tokenNameCollateral} in Protocol:</span><span>{protocol_balance_collateral}</span></div>
+        </div>
+
+        {/* Action Panel */}
+        <div className="border border-green-500/50 p-4 flex flex-col gap-4">
+            <h3 className="text-xl tracking-wider">// ACTION</h3>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <span className="flex-shrink-0">Asset to {activeTab.toLowerCase()}:</span>
+                <div className="flex gap-2">
+                    <button className={`flex-grow ${choosenAsset === "ETH" ? "buttonselected" : ""}`} onClick={() => setChoosenAsset("ETH")}>{tokenNameLend}</button>
+                    <button className={`flex-grow ${choosenAsset === "FETH" ? "buttonselected" : ""}`} onClick={() => setChoosenAsset("FETH")}>{tokenNameCollateral}</button>
+                </div>
+            </div>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <label htmlFor="amount-input">Amount in {choosenAsset}:</label>
+                <input
+                    id="amount-input"
+                    type="text"
+                    className="w-full md:w-1/2"
+                    value={inputAmount}
+                    onChange={(e) => setInputAmount(e.target.value)}
+                    placeholder="0.0"
+                />
+            </div>
+        </div>
+      </div>
+
+      <button
+        className="w-full mt-6 py-3 font-medium flex items-center gap-x-3 justify-center text-xl tracking-widest"
+        disabled={isButtonDisabled || loading}
+        title={isButtonDisabled ? "Please enter a valid amount" : `Execute ${activeTab}`}
+        onClick={handleExecute}
+      >
+        {loading ? "PROCESSING..." : `[ ${activeTab.toUpperCase()} ${choosenAsset} ]`}
+        {loading && <Image src={spinner} alt="loading" height={20} width={20} className="animate-spin" />}
+      </button>
     </GenericModal>
   );
 }
