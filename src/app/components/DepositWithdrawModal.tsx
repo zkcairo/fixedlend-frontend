@@ -119,7 +119,7 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
         ))}
       </div>
 
-      <div className="flex flex-col gap-y-4 text-lg">
+      <div className="flex flex-col overflow-y-auto gap-y-4 text-lg">
         {/* Balances Panel */}
         <div className="border border-green-500/50 p-4 flex flex-col gap-2">
             <h3 className="text-xl tracking-wider mb-2">// BALANCES</h3>
