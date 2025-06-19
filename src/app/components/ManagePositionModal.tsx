@@ -34,7 +34,7 @@ function ManagePositionModal({ isOpen, onClose, account, tokenUsed, category, si
         setLoading(true);
         try {
             let functionName = "";
-            let calldata = [];
+            let calldata: any[] = [];
             if (activeTab === "lend offers") { functionName = "disable_lend_offer"; calldata = [id.toString()]; }
             if (activeTab === "borrow offers") { functionName = "disable_borrow_offer"; calldata = [id.toString()]; }
             if (activeTab === "current loans") { functionName = "repay_offer"; calldata = [id[0].toString()]; /* Simplified, might need more data */ }

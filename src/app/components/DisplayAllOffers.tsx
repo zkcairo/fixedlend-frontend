@@ -72,8 +72,8 @@ const AllOffers = ({ offers, loading, type, me, labelButton, action, category }:
     const lendLoans = (offers as any[])[1]?.map((o: any) => ({ ...o[0], token: o[1] })).filter((l: any) => l.is_active) || [];
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 max-h-[60vh] overflow-y-auto">
-            {borrowLoans.map((loan, index) => renderLoan(loan, index, 'borrow'))}
-            {lendLoans.map((loan, index) => renderLoan(loan, index, 'lend'))}
+            {borrowLoans.map((loan: any, index: number) => renderLoan(loan, index, 'borrow'))}
+            {lendLoans.map((loan: any, index: number) => renderLoan(loan, index, 'lend'))}
         </div>
     );
   }
