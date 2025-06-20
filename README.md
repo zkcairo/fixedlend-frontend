@@ -1,5 +1,7 @@
 # Frontend of FixedLend
 
+Backup without fancy animation: https://fixedlend-frontend-gskwiuroz-zkcairos-projects.vercel.app
+
 Using scaffold
 
 Is a nextjs app

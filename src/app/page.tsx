@@ -22,8 +22,8 @@ export default function Home() {
     address: contractAddress, abi: MyAbi, functionName: "frontend_available_to_lend_and_borrow",
     args: [ETH_CATEGORY], watch: true,
   });
-  const volumeEthLend = volume_eth_loading ? "..." : formatCurrency((volume_eth_data as any[])[0]);
-  const volumeEthBorrow = volume_eth_loading ? "..." : formatCurrency((volume_eth_data as any[])[1]);
+  const volumeEthBorrow = volume_eth_loading ? "..." : formatCurrency((volume_eth_data as any[])[0]);
+  const volumeEthLend = volume_eth_loading ? "..." : formatCurrency((volume_eth_data as any[])[1]);
 
   return (
     <>
