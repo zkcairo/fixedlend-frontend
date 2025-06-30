@@ -58,10 +58,10 @@ const AllOffers = ({ offers, loading, type, me, labelButton, action, category }:
               {!isBorrow && <p>Interest Earned: {formatCurrency(interest - Number(loan.amount))} {categoryName(category)}</p>}
               <button
                   className="mt-2"
-                  disabled={isBorrow ? !canRepay : !canLiquidate}
-                  onClick={(e) => { e.preventDefault(); isBorrow ? action([loan.id, loan.token, interest]) : action(loan.id) }}
+                  disabled={!canRepay && !canLiquidate}
+                  onClick={(e) => { e.preventDefault(); canRepay ? action(["repay_offer", loan.id]) : action(["liquidate_offer", loan.id]) }}
               >
-                  {isBorrow ? "Repay" : "Liquidate"}
+                  {canRepay ? "Repay" : "Liquidate"}
               </button>
           </div>
       );

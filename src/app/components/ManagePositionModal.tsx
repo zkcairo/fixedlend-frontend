@@ -30,14 +30,14 @@ function ManagePositionModal({ isOpen, onClose, account, tokenUsed, category, si
     const closeModal = (e?: React.MouseEvent<HTMLElement>) => { if (e) e.stopPropagation(); setAnimate(false); setTimeout(onClose, 400); };
     useEffect(() => { if (isOpen) setAnimate(true); }, [isOpen]);
 
-    async function handleAction(id: any) {
+    async function handleAction(id: any, liq: boolean) {
         setLoading(true);
         try {
             let functionName = "";
             let calldata: any[] = [];
             if (activeTab === "lend offers") { functionName = "disable_lend_offer"; calldata = [id.toString()]; }
             if (activeTab === "borrow offers") { functionName = "disable_borrow_offer"; calldata = [id.toString()]; }
-            if (activeTab === "current loans") { functionName = "repay_offer"; calldata = [id[0].toString()]; /* Simplified, might need more data */ }
+            if (activeTab === "current loans") { functionName = id[0].toString(); calldata = [id[1].toString()]; }
 
             await account.execute({ contractAddress, entrypoint: functionName, calldata });
             toast.success("Action completed successfully!");
