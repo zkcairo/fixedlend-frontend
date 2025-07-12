@@ -16,13 +16,13 @@ export default function Page() {
     address: contractAddress, abi: MyAbi, functionName: "frontend_get_user_points",
     args: [userAddress], watch: true,
   });
-  const points = points_loading ? "Loading..." : Number(Number(points_data) / 10 ** 16).toFixed(0);
+  const points = points_loading ? "Loading..." : Number(points_data);
 
   const { data: totalpoints_data, isLoading: totalpoints_loading } = useContractRead({
     address: contractAddress, abi: MyAbi, functionName: "frontend_get_total_points",
     args: [], watch: true,
   });
-  const totalpoints = totalpoints_loading ? "Loading..." : Number(Number(totalpoints_data) / 10 ** 16).toFixed(0);
+  const totalpoints = totalpoints_loading ? "Loading..." : Number(totalpoints_data);
 
   return (
     <>
@@ -34,9 +34,8 @@ export default function Page() {
           
           <div className="w-full max-w-3xl mt-12 text-left text-lg leading-relaxed flex flex-col gap-y-6">
               <div>
-                <p>{">"} Your points: {points}</p>
-                <p>{">"} Total number of points: {totalpoints}</p>
-                <p className="opacity-70">{">"} (Points from the old protocol will be ported soon)</p>
+                <p>{">"} Your points: {points === "Loading..." ? points : points.toExponential()}</p>
+                <p>{">"} Total number of points: {totalpoints === "Loading..." ? totalpoints : totalpoints.toExponential()}</p>
               </div>
 
               <div>

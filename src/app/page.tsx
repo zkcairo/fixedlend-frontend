@@ -34,7 +34,7 @@ export default function Home() {
           <h1 className="text-6xl font-bold mt-20 tracking-widest">FixedLend</h1>
           <p className="text-2xl mt-5 max-w-2xl">
             A peer-to-peer lending app on Starknet.<br/>
-            Make a fixed apy loan/borrow for a fixed duration now.
+            Make a fixed APY fixed duration ETH loan asap.
           </p>
           
           <div className="w-full max-w-2xl mt-12 text-left text-lg leading-relaxed p-6 border border-green-500/50 shadow-[inset_0_0_10px_rgba(0,255,0,0.3)]">
