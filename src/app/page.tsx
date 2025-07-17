@@ -5,8 +5,9 @@ import Bottom from "./components/Bottom";
 import MyAbi from "./abi/mycontract.abi.json";
 import { useContractRead } from "@starknet-react/core";
 import { formatCurrency, formatYield } from "./utils/format";
-import { CONTRACT_ADDRESS, ETH_CATEGORY, USDC_CATEGORY } from "./utils/constant";
+import { CONTRACT_ADDRESS, ETH_ADDRESS, ETH_CATEGORY, FETH_ADDRESS, USDC_CATEGORY } from "./utils/constant";
 import MatrixRain from "./components/MatrixRain";
+import { getErc20Balance } from "./utils/fetch";
 
 export default function Home() {
   const contractAddress = CONTRACT_ADDRESS;
@@ -25,6 +26,9 @@ export default function Home() {
   const volumeEthBorrow = volume_eth_loading ? "..." : formatCurrency((volume_eth_data as any[])[0]);
   const volumeEthLend = volume_eth_loading ? "..." : formatCurrency((volume_eth_data as any[])[1]);
 
+  const ethBalance = getErc20Balance(ETH_ADDRESS, contractAddress);
+  const fethBalance = getErc20Balance(FETH_ADDRESS, contractAddress);
+
   return (
     <>
       <MatrixRain />
@@ -34,12 +38,14 @@ export default function Home() {
           <h1 className="text-6xl font-bold mt-20 tracking-widest">FixedLend</h1>
           <p className="text-2xl mt-5 max-w-2xl">
             A peer-to-peer lending app on Starknet.<br/>
-            Make a fixed APY fixed duration ETH loan asap.
+            Fixed APY, Fixed duration, loans.
           </p>
-          
+          <p className="text-2xl mt-5 max-w-2xl"><a href="https://docs.fixedlend.com/fixedlend/security/audits" target="_blank" rel="noopener noreferrer">Code is audited!</a></p>
+
           <div className="w-full max-w-2xl mt-12 text-left text-lg leading-relaxed p-6 border border-green-500/50 shadow-[inset_0_0_10px_rgba(0,255,0,0.3)]">
             <h4 className="text-3xl font-bold mb-6 text-center tracking-wider">Platform Statistics</h4>
-            <p>{">"} Current ETH yield (APR): {Number(bestYieldEthBorrow) - 1}% lend / {Number(bestYieldEthLend) + 1}% borrow</p>
+            <p>{">"} TLV: {(Number(ethBalance) + Number(fethBalance)) / Math.pow(10, 18)} ETH</p>
+            <p className="mt-2">{">"} Current ETH yield (APR): {Number(bestYieldEthBorrow) - 1}% lend / {Number(bestYieldEthLend) + 1}% borrow</p>
             <p className="mt-2">{">"} Available on the ETH market: {volumeEthBorrow} ETH to lend / {volumeEthLend} ETH to borrow</p>
             {/* Add USDC stats back here if needed */}
           </div>
