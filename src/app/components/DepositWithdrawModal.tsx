@@ -18,9 +18,10 @@ type Props = {
   tokenUsed: string;
   category: string;
   alloffers: any;
+  disableBorrow: boolean;
 };
 
-function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, category, alloffers }: Props) {
+function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, category, alloffers, disableBorrow }: Props) {
   
   const [inputAmount, setInputAmount] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Deposit");
@@ -125,8 +126,10 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
             <h3 className="text-xl tracking-wider mb-2">// BALANCES</h3>
             <div className="flex justify-between"><span>{tokenNameLend} in Wallet:</span><span>{account_balance_eth}</span></div>
             <div className="flex justify-between"><span>{tokenNameLend} in Protocol:</span><span>{protocol_balance_eth}</span></div>
-            <div className="flex justify-between mt-2"><span>{tokenNameCollateral} in Wallet:</span><span>{account_balance_collateral}</span></div>
-            <div className="flex justify-between"><span>{tokenNameCollateral} in Protocol:</span><span>{protocol_balance_collateral}</span></div>
+            {!disableBorrow && <>
+              <div className="flex justify-between mt-2"><span>{tokenNameCollateral} in Wallet:</span><span>{account_balance_collateral}</span></div>
+              <div className="flex justify-between"><span>{tokenNameCollateral} in Protocol:</span><span>{protocol_balance_collateral}</span></div>
+            </>}
         </div>
 
         {/* Action Panel */}
@@ -136,7 +139,7 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
                 <span className="flex-shrink-0">Asset to {activeTab.toLowerCase()}:</span>
                 <div className="flex gap-2">
                     <button className={`flex-grow ${choosenAsset === "ETH" ? "buttonselected" : ""}`} onClick={() => setChoosenAsset("ETH")}>{tokenNameLend}</button>
-                    <button className={`flex-grow ${choosenAsset === "FETH" ? "buttonselected" : ""}`} onClick={() => setChoosenAsset("FETH")}>{tokenNameCollateral}</button>
+                    {!disableBorrow && (<button className={`flex-grow ${choosenAsset === "FETH" ? "buttonselected" : ""}`} onClick={() => setChoosenAsset("FETH")}>{tokenNameCollateral}</button>)}
                 </div>
             </div>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">

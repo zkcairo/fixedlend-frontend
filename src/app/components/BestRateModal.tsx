@@ -15,9 +15,9 @@ import { matchBorrow, matchLend } from "../utils/matchMaking";
 import { getProtocolBalance } from "../utils/fetch";
 import { ETH_ADDRESS, FETH_ADDRESS } from "@/app/utils/constant";
 
-type Props = { isOpen: boolean; onClose: () => void; account: any; tokenUsed: string; category: string; alloffers: any; };
+type Props = { isOpen: boolean; onClose: () => void; account: any; tokenUsed: string; category: string; alloffers: any; disableBorrow: boolean; };
 
-function BestRateModal({ isOpen, onClose, account, tokenUsed, category, alloffers }: Props) {
+function BestRateModal({ isOpen, onClose, account, tokenUsed, category, alloffers, disableBorrow }: Props) {
     const [minimalDuration, setMinimalDuration] = useState<number>(24);
     const [maximalDuration, setMaximalDuration] = useState<number>(168); // 7 days
     const [inputAmount, setInputAmount] = useState<string>("");
@@ -90,10 +90,12 @@ function BestRateModal({ isOpen, onClose, account, tokenUsed, category, alloffer
                 <h1 className="text-3xl font-bold tracking-widest">{activeTab} {tokenUsed}</h1>
                 <button onClick={closeModal} className="border border-green-500 w-8 h-8 flex items-center justify-center hover:bg-green-500 hover:text-black transition-all">X</button>
             </div>
+            {!disableBorrow && (
             <div className="flex justify-center gap-4 mb-6">
                 <button className={isLend ? "buttonselected" : ""} onClick={() => { setChoosenAsset(""); setActiveTab("Just lend"); }}>Lend</button>
                 <button className={!isLend ? "buttonselected" : ""} onClick={() => { setChoosenAsset(""); setActiveTab("Just borrow"); }}>Borrow</button>
             </div>
+            )}
             <div className="flex-grow overflow-y-auto pr-2 flex flex-col gap-4 text-lg">
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label>Max you can {isLend ? "lend" : "borrow"}:</label>

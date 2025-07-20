@@ -63,8 +63,8 @@ export default function OrderBookPage() {
         {isManagePositionModalOpen && <ManagePositionModal isOpen={isManagePositionModalOpen} onClose={() => setIsManagePositionModalOpen(false)} account={account} tokenUsed={market} category={currentCategory} simplified={false} />}
         {isTakeOrderModalOpen && <TakeOrderModal isOpen={isTakeOrderModalOpen} onClose={() => setIsTakeOrderModalOpen(false)} account={account} tokenUsed={market} category={currentCategory} />}
         {isMakeOrderModalOpen && <MakeOrderModal isOpen={isMakeOrderModalOpen} onClose={() => setIsMakeOrderModalOpen(false)} account={account} tokenUsed={market} category={currentCategory} />}
-        {bestRateModalOpen && <BestRateModal isOpen={bestRateModalOpen} onClose={() => setBestRateModalOpen(false)} account={account} tokenUsed={market} category={currentCategory} alloffers={all_offers} />}
-        {depositWithdrawModalOpen && <DepositWithdrawModal isOpen={depositWithdrawModalOpen} onClose={() => setDepositWithdrawModalOpen(false)} account={account} tokenUsed={market} category={currentCategory} alloffers={all_offers} />}
+        {bestRateModalOpen && <BestRateModal disableBorrow={false} isOpen={bestRateModalOpen} onClose={() => setBestRateModalOpen(false)} account={account} tokenUsed={market} category={currentCategory} alloffers={all_offers} />}
+        {depositWithdrawModalOpen && <DepositWithdrawModal disableBorrow={false} isOpen={depositWithdrawModalOpen} onClose={() => setDepositWithdrawModalOpen(false)} account={account} tokenUsed={market} category={currentCategory} alloffers={all_offers} />}
         
         <Header />
         

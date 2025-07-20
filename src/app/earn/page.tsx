@@ -51,6 +51,7 @@ export default function OrderBookPage() {
             tokenUsed={market}
             category={currentCategory}
             alloffers={all_offers}
+            disableBorrow={true}
           />
         )}
         {depositWithdrawModalOpen && (
@@ -61,6 +62,7 @@ export default function OrderBookPage() {
             tokenUsed={market}
             category={currentCategory}
             alloffers={all_offers}
+            disableBorrow={true}
           />
         )}
         
@@ -68,16 +70,17 @@ export default function OrderBookPage() {
 
         <main className="container mx-auto py-10 px-4 flex flex-col items-center text-center mt-24 md:mt-12">
             <h1 className="text-5xl md:text-7xl font-bold tracking-widest">FixedLend</h1>
-            <h2 className="text-xl md:text-2xl mt-2">(Peer-to-Peer Lending)</h2>
+            <h2 className="text-xl md:text-2xl mt-2">(Earn Page)</h2>
 
             <div className="w-full max-w-xl mt-12 text-left text-lg leading-relaxed">
-              <p>{">"} First, deposit some assets.</p>
-              <p>{">"} Then lend/borrow during the duration of your choice.</p>
-              <p>{">"} Once you enter your duration, the best available APY is displayed to you,
-                accept it or not.</p>
+              <p>{">"} First, deposit some non-yield assets like ETH.</p>
+              <p>{">"} Then lend it, either for a single loan or a recurring loan.</p>
+              <p>{">"} (Right now, only ETH is supported)</p>
+              {/* <p>{">"} To do so, click "Lend" and enter your duration, the best available APY is displayed to you,
+                accept it or not.</p> */}
               <br/>
-              <p>{">"} The APY you get is not what you wanted?</p>
-              <p>{">"} Go to the market-maker interface and make an offer.</p>
+              {/* <p>{">"} The APY you get is not what you wanted?</p> */}
+              <p>{">"} Feeling like a pro trader? Go to the market-maker interface.</p>
             </div>
 
             <div className="mt-12 w-full max-w-sm flex flex-col gap-4">
@@ -88,24 +91,29 @@ export default function OrderBookPage() {
               >
                 Deposit/Withdraw
               </button>
-
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setBestRateModalOpen(true)}
                   disabled={!isConnected}
                 >
-                  Lend/Borrow Eth
+                  Single Lend
                 </button>
                 <button
-                  onClick={() => setIsManagePositionModalOpen(true)}
-                  disabled={!isConnected}
+                  onClick={() => setBestRateModalOpen(true)}
+                  disabled
                 >
-                  Your Eth loans
+                  Recurring Lend
                 </button>
               </div>
+              <button
+                onClick={() => setIsManagePositionModalOpen(true)}
+                disabled={!isConnected}
+              >
+                Your Loans
+              </button>
 
-              <button className="w-full">
-                <a href="/app" className="block w-full h-full py-3 px-4">Go to the market-maker interface</a>
+              <button className="w-full mt-4">
+                <a href="/app" className="block w-full h-full">Go to the market-maker interface</a>
               </button>
             </div>
             {!isConnected && <p className="mt-4 text-red-500 animate-pulse">Connect your wallet to use the app</p>}

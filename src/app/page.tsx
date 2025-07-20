@@ -47,16 +47,12 @@ export default function Home() {
             <p>{">"} TLV: {(Number(ethBalance) + Number(fethBalance)) / Math.pow(10, 18)} ETH</p>
             <p className="mt-2">{">"} Current ETH yield (APR): {Number(bestYieldEthBorrow) - 1}% lend / {Number(bestYieldEthLend) + 1}% borrow</p>
             <p className="mt-2">{">"} Available on the ETH market: {volumeEthBorrow} ETH to lend / {volumeEthLend} ETH to borrow</p>
-            {/* Add USDC stats back here if needed */}
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 mt-10">
             <button>
               <a href="/earn" className="block w-full h-full py-2 px-4">Open the App</a>
             </button>
-            {/* <button>
-              <a href="http://twitter.com/zkcairo" target="_blank" className="block w-full h-full py-2 px-4">Follow on X</a>
-            </button> */}
           </div>
         </main>
         <Bottom />
