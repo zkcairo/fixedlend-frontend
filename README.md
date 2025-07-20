@@ -2,6 +2,8 @@
 
 Backup without fancy animation: https://fixedlend-frontend-gskwiuroz-zkcairos-projects.vercel.app
 
+Smart contract code: https://github.com/zkcairo/fixedlend
+
 Using scaffold
 
 Is a nextjs app
@@ -12,13 +14,9 @@ Deployed on vercel
 
 ## Risks of using the app:
 
-The code is not audited. It could have bugs that could result in total loss of funds.
-
-The code is not tested. It could have bugs that could result in total loss of funds.
+The code is audited, however it could have bugs that could result in total loss of funds.
 
 Starknet and cairo are experimental technology. It could have bugs that could result in total loss of funds.
-
-The app is new, so as every lending app if there aren't enough liquidity it could result in your funds being stucked in the platform.
 
 I reserve the right to modify your number of points at anytime.
 Maybe there won't be an airdrop.
