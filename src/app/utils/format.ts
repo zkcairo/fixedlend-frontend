@@ -36,9 +36,9 @@ export function currentTime(): string {
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 }
 
-export function formatCurrency(currency: number) {
+export function formatCurrency(currency: number, scale = 10000) {
     let amount = Number(currency) / 1e18;
-    amount = Math.round(amount * 10000) / 10000;
+    amount = Math.round(amount * scale) / scale;
     return amount;
 }
 

@@ -44,6 +44,9 @@ const AllOffers = ({ offers, loading, type, me, labelButton, action, category }:
       const isBorrow = loanType === 'borrow';
       const rate = isBorrow ? loan.borrowing_rate : loan.lending_rate;
       const interest = computeInterest(Number(loan.amount), Number(rate), currentDate.getTime() / 1000 - Number(loan.date_taken));
+      console.log(rate);
+      console.log(interest);
+      console.log(loan.amount);
       const canRepay = currentDate >= new Date(1000 * Number(loan.date_taken + loan.minimal_duration)) && currentDate <= new Date(1000 * Number(loan.date_taken + loan.maximal_duration));
       const canLiquidate = currentDate > new Date(1000 * Number(loan.date_taken + loan.maximal_duration));
 
@@ -55,7 +58,7 @@ const AllOffers = ({ offers, loading, type, me, labelButton, action, category }:
               <p>Repay After: {formatDate(loan.date_taken + loan.minimal_duration)}</p>
               <p>Repay Before: {formatDate(loan.date_taken + loan.maximal_duration)}</p>
               <p>Current Value: {formatCurrency(interest)} {categoryName(category)}</p>
-              {!isBorrow && <p>Interest Earned: {formatCurrency(interest - Number(loan.amount))} {categoryName(category)}</p>}
+              {!isBorrow && <p>Interest Earned: {formatCurrency(interest - Number(loan.amount), 10**18)} {categoryName(category)}</p>}
               <button
                   className="mt-2"
                   disabled={!canRepay && !canLiquidate}

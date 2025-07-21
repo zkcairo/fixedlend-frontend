@@ -78,7 +78,7 @@ function TakeOrderModalFinal({ isOpen, onClose, account, offer, isLend }: Props)
             <div className="flex-grow overflow-y-auto pr-2 flex flex-col gap-4 text-lg">
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label>Max Amount:</label>
-                    <span>{formatCurrency(Number(offer.amount_available))} ETH</span>
+                    <span>{formatCurrency(Number(offer.amount_available), 10**18)} ETH</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label htmlFor="amount">Amount to {isLend ? "borrow" : "lend"}:</label>

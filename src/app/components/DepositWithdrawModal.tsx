@@ -10,6 +10,7 @@ import { prettyNameFromAddress } from "../utils/erc20";
 import { getAllLend, getAllCollateral } from "@/app/utils/erc20";
 import { getErc20Balance, getProtocolBalance } from "../utils/fetch";
 import toast from "react-hot-toast";
+import { formatCurrency } from "../utils/format";
 
 type Props = {
   isOpen: boolean;
@@ -42,11 +43,10 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
   const tokenNameCollateral = prettyNameFromAddress(choosenAssetCollateral);
 
   // Balances
-  const scale = 10000;
-  const account_balance_eth = Math.round(scale * Number(getErc20Balance(choosenAssetLend, account.address)) / 10**18) / scale;
-  const protocol_balance_eth = Math.round(scale * Number(getProtocolBalance(choosenAssetLend, account.address)) / 10**18) / scale;
-  const account_balance_collateral = Math.round(scale * Number(getErc20Balance(choosenAssetCollateral, account.address)) / 10**18) / scale;
-  const protocol_balance_collateral = Math.round(scale * Number(getProtocolBalance(choosenAssetCollateral, account.address)) / 10**18) / scale;
+  const account_balance_eth = formatCurrency(Number(getErc20Balance(choosenAssetLend, account.address)));
+  const protocol_balance_eth = formatCurrency(Number(getProtocolBalance(choosenAssetLend, account.address)), 10**18);
+  const account_balance_collateral = formatCurrency(Number(getErc20Balance(choosenAssetCollateral, account.address)));
+  const protocol_balance_collateral = formatCurrency(Number(getProtocolBalance(choosenAssetCollateral, account.address)), 10**18);
 
   useEffect(() => {
     if (isOpen) setAnimate(true);

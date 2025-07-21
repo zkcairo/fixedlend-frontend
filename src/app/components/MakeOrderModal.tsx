@@ -76,7 +76,7 @@ function MakeOrderModal({ isOpen, onClose, account, tokenUsed, category }: Props
             <div className="flex-grow overflow-y-auto pr-2 flex flex-col gap-4 text-lg">
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label>Max you can {isLend ? "lend" : "borrow"}:</label>
-                    <span>{isLend ? maxYouCanLend.toFixed(4) : maxYouCanBorrow.toFixed(4)} {tokenUsed}</span>
+                    <span>{isLend ? maxYouCanLend.toFixed(18) : maxYouCanBorrow.toFixed(18)} {tokenUsed}</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label htmlFor="amount">Amount ({tokenUsed}):</label>
