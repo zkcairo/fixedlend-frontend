@@ -44,7 +44,7 @@ export default function Home() {
 
           <div className="w-full max-w-2xl mt-12 text-left text-lg leading-relaxed p-6 border border-green-500/50 shadow-[inset_0_0_10px_rgba(0,255,0,0.3)]">
             <h4 className="text-3xl font-bold mb-6 text-center tracking-wider">Platform Statistics</h4>
-            <p>{">"} TLV: {(Number(ethBalance) + Number(fethBalance)) / Math.pow(10, 10)} ETH</p>
+            <p>{">"} TLV: {formatCurrency(Number(ethBalance) + Number(fethBalance))} ETH</p>
             <p className="mt-2">{">"} Current ETH yield (APR): {Number(bestYieldEthBorrow) - 1}% lend / {Number(bestYieldEthLend) + 1}% borrow</p>
             <p className="mt-2">{">"} Available on the ETH market: {volumeEthBorrow} ETH to lend / {volumeEthLend} ETH to borrow</p>
           </div>
