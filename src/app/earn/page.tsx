@@ -9,12 +9,14 @@ import { useContractRead, useAccount } from "@starknet-react/core";
 import MyAbi from "../abi/mycontract.abi.json";
 import { CONTRACT_ADDRESS, ETH_CATEGORY } from "@/app/utils/constant";
 import MatrixRain from "../components/MatrixRain";
+import RecurringLendModal from "../components/RecurringLend";
 
 export default function OrderBookPage() {
   const { account, isConnected } = useAccount();
 
   const [market, setMarket] = useState("ETH");
   const [bestRateModalOpen, setBestRateModalOpen] = useState(false);
+  const [recurringModalOpen, setRecurringModalOpen] = useState(false);
   const [isManagePositionModalOpen, setIsManagePositionModalOpen] = useState(false);
   const [depositWithdrawModalOpen, setDepositWithdrawModalOpen] = useState(false);
 
@@ -47,6 +49,17 @@ export default function OrderBookPage() {
           <BestRateModal
             isOpen={bestRateModalOpen}
             onClose={() => setBestRateModalOpen(false)}
+            account={account}
+            tokenUsed={market}
+            category={currentCategory}
+            alloffers={all_offers}
+            disableBorrow={true}
+          />
+        )}
+        {recurringModalOpen && (
+          <RecurringLendModal
+            isOpen={recurringModalOpen}
+            onClose={() => setRecurringModalOpen(false)}
             account={account}
             tokenUsed={market}
             category={currentCategory}
@@ -99,8 +112,8 @@ export default function OrderBookPage() {
                   Single Lend
                 </button>
                 <button
-                  onClick={() => setBestRateModalOpen(true)}
-                  disabled
+                  onClick={() => setRecurringModalOpen(true)}
+                  disabled={!isConnected}
                 >
                   Recurring Lend
                 </button>
@@ -109,7 +122,7 @@ export default function OrderBookPage() {
                 onClick={() => setIsManagePositionModalOpen(true)}
                 disabled={!isConnected}
               >
-                Your Loans
+                Your Positions
               </button>
 
               <button className="w-full mt-4">

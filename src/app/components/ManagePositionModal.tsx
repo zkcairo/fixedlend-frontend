@@ -57,7 +57,7 @@ function ManagePositionModal({ isOpen, onClose, account, tokenUsed, category, si
                 <button onClick={closeModal} className="border border-green-500 w-8 h-8 flex items-center justify-center hover:bg-green-500 hover:text-black transition-all">X</button>
             </div>
             <div className="flex justify-center gap-4 mb-6">
-                {(simplified ? ["current loans"] : ["lend offers", "borrow offers", "current loans"]).map((tab) => (
+                {(simplified ? ["lend offers", "current loans"] : ["lend offers", "borrow offers", "current loans"]).map((tab) => (
                     <button key={tab} className={`capitalize ${activeTab === tab ? "buttonselected" : ""}`} onClick={() => setActiveTab(tab)}>{tab}</button>
                 ))}
             </div>
