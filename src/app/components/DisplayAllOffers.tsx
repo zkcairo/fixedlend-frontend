@@ -47,7 +47,7 @@ const AllOffers = ({ offers, loading, type, me, labelButton, action, category }:
       console.log(rate);
       console.log(interest);
       console.log(loan.amount);
-      const canRepay = currentDate >= new Date(1000 * Number(loan.date_taken + loan.minimal_duration)) && currentDate <= new Date(1000 * Number(loan.date_taken + loan.maximal_duration));
+      const canRepay = isBorrow && (currentDate >= new Date(1000 * Number(loan.date_taken + loan.minimal_duration)) && currentDate <= new Date(1000 * Number(loan.date_taken + loan.maximal_duration)));
       const canLiquidate = currentDate > new Date(1000 * Number(loan.date_taken + loan.maximal_duration));
 
       return (
