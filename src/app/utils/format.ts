@@ -38,13 +38,13 @@ export function currentTime(): string {
 
 export function formatCurrency(currency: number, scale = 10000) {
     let amount = Number(currency) / 1e18;
-    amount = Math.ceil(amount * scale) / scale;
+    amount = Math.trunc(amount * scale) / scale;
     return amount;
 }
 
 export function formatCollateral(currency: number, decimals: number) {
     let amount = Number(currency) / 10 ** decimals;
-    amount = Math.ceil(amount * 100) / 100;
+    amount = Math.trunc(amount * 100) / 100;
     return amount;
 }
 
