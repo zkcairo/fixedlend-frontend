@@ -97,6 +97,16 @@ function BestRateModal({ isOpen, onClose, account, tokenUsed, category, alloffer
             </div>
             )}
             <div className="flex-grow overflow-y-auto pr-2 flex flex-col gap-4 text-lg">
+                {disableBorrow && (
+                    <>
+                    <hr className="border-green-500/30 my-2" />
+                    <div className="w-full text-left text-lg leading-relaxed">
+                        <p>{">"} By using this page, you <b>TAKE</b> an offer on FixedLend orderbook.</p>
+                        <p>{">"} <a href="https://docs.fixedlend.com/fixedlend/main/lenders-guide#option-a-execute-a-one-time-loan" target="_blank">Here is a small guide to help you.</a></p>
+                    </div>
+                    <hr className="border-green-500/30 my-2" />
+                    </>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label>Max you can {isLend ? "lend" : "borrow"}:</label>
                     <span>{isLend ? maxYouCanLend.toFixed(18) : maxYouCanBorrow.toFixed(18)} {tokenUsed}</span>

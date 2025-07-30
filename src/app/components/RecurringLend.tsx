@@ -99,14 +99,11 @@ function RecurringLendModal({ isOpen, onClose, account, tokenUsed, category, all
             <div className="flex-grow overflow-y-auto pr-2 flex flex-col gap-4 text-lg">
                 <hr className="border-green-500/30 my-2" />
                 <div className="w-full text-left text-lg leading-relaxed">
-                    <p>{">"} By using this page, you create an offer on FixedLend orderbook.</p>
-                    <p>{">"} You need to select your wanted APR and maximal withdrawal duration rate,
-                        which is how long at max it can take to get your money back.</p>
-                    <p>{">"} Then, your offer is listed on the market.</p>
-                    <p>{">"} Either it was attractive enough, and it gets matched by the bots.</p>
-                    <p>{">"} Either it wasn't, and then please lower your wanted APR.</p>
-                    <p>{">"} Unless you disable it, your offer automaticly renew and auto-compounds.</p>
-                    <p>{">"} If you're unsure what parameters to use, ask the <a href="https://t.me/+x1dXX6x0A3MzNGU0" target="_blank">Telegram group</a>.</p>
+                    <p>{">"} By using this page, you <b>MAKE</b> an offer on FixedLend orderbook.</p>
+                    <p>{">"} <a href="https://docs.fixedlend.com/fixedlend/main/lenders-guide#option-b-create-a-recurring-loan-offer" target="_blank">Here is a small guide to help you.</a></p>
+                    <p>{">"} </p>
+                    <p>{">"} (We recommend 5days for duration and 11.5% APR).</p>
+                    <p>{">"} If you have more questions, ask the <a href="https://t.me/+x1dXX6x0A3MzNGU0" target="_blank">Telegram group</a>.</p>
                 </div>
                 <hr className="border-green-500/30 my-2" />
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">

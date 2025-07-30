@@ -86,14 +86,16 @@ export default function OrderBookPage() {
             <h2 className="text-xl md:text-2xl mt-2">(Earn Page)</h2>
 
             <div className="w-full max-w-xl mt-12 text-left text-lg leading-relaxed">
-              <p>{">"} First, deposit some non-yield assets like ETH.</p>
-              <p>{">"} Then lend it, either for a single loan or a recurring loan.</p>
-              <p>{">"} (Right now, only ETH is supported)</p>
+              <p>{">"} First, Deposit.</p>
+              <p>{">"} Then, Lend.</p>
+              <p>{">"} Only ETH is supported now.</p>
+              <p>{">"} (<a href="https://docs.fixedlend.com/fixedlend/main/lenders-guide" target="_blank">Guide</a>)</p>
               {/* <p>{">"} To do so, click "Lend" and enter your duration, the best available APY is displayed to you,
                 accept it or not.</p> */}
               <br/>
               {/* <p>{">"} The APY you get is not what you wanted?</p> */}
-              <p>{">"} Feeling like a pro trader? Go to the market-maker interface.</p>
+              <p>{">"} Feeling like a pro trader?</p>
+              <p>{">"} Go to the market-maker interface.</p>
             </div>
 
             <div className="mt-12 w-full max-w-sm flex flex-col gap-4">
