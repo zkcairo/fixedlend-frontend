@@ -14,6 +14,7 @@ import MyAbi from "../abi/mycontract.abi.json";
 import { sortByYield } from "@/app/utils/array";
 import { formatCurrency, formatTime } from "@/app/utils/format";
 import { CONTRACT_ADDRESS, ETH_CATEGORY, MIN_ETH_VALUE } from "@/app/utils/constant";
+import YieldCurveGraph from "../components/YieldCurvegraph";
 
 const contractAddress = CONTRACT_ADDRESS;
 
@@ -32,6 +33,9 @@ export default function OrderBookPage() {
   const [bestRateModalOpen, setBestRateModalOpen] = useState(false);
   const [depositWithdrawModalOpen, setDepositWithdrawModalOpen] = useState(false);
 
+  const [showOrderbook, setShowOrderbook] = useState(false);
+  const [showYieldcurve, setShowYieldcurve] = useState(false);
+
   const currentCategory = ETH_CATEGORY;
 
   const { data: users_data, isLoading: users_loading } = useContractRead({
@@ -48,6 +52,15 @@ export default function OrderBookPage() {
       .filter(o => o.is_active && maximalDuration * 3600 <= Number(o.price.maximal_duration) && minimalDuration * 3600 >= Number(o.price.minimal_duration) && Number(o.amount_available) > MIN_ETH_VALUE)
       .map(o => ({ volume: formatCurrency(Number(o.amount_available)), yield: Number(o.price.rate) / 10000 + 1 })),
   };
+
+  const YieldCurveData = sortByYield(all_offers[0], "borrow")
+      .filter(o => o.is_active)
+      .map(o => ({
+        volume: formatCurrency(Number(o.amount_available)),
+        yield: Number(o.price.rate) / 10000 - 1,
+        minimal_duration: Number(o.price.minimal_duration) / (24*3600),
+        maximal_duration: Number(o.price.maximal_duration) / (24*3600)
+      }));
 
   const handleDurationChange = (newDuration: string) => {
     setDuration(newDuration);
@@ -69,17 +82,48 @@ export default function OrderBookPage() {
         <Header />
         
         <main className="container mx-auto py-10 px-4 flex flex-col items-center text-center mt-24 md:mt-12">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-wider">Lending Market</h1>
-          <h2 className="text-xl md:text-2xl mt-2">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-wider">Market-Maker Page</h1>
+          {/* <h2 className="text-xl md:text-2xl mt-2">
             {advancedSelection ? `${market} | Loan between ${formatTime(minimalDuration)} and ${formatTime(maximalDuration)}` : `${market} | Loan of ${duration}`}
-          </h2>
+          </h2> */}
+ 
+          <div className="mt-8 flex flex-col gap-4 w-full max-w-md">
+             <button className="mb-6"><a href="https://docs.FixedLend.com/FixedLend/guide-to-use-the-app" className="block w-full h-full py-2 px-4">Read The Guide</a></button>
+             {!isConnected && <p className="text-red-500 animate-pulse">Connect your wallet to use the app</p>}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button onClick={() => setDepositWithdrawModalOpen(true)} disabled={!isConnected}>Deposit/Withdraw</button>
+              <button onClick={() => setIsManagePositionModalOpen(true)} disabled={!isConnected}>Manage Position</button>
+            </div>
+            <button onClick={() => setBestRateModalOpen(true)} disabled={!isConnected}>Market Lend/Borrow</button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button onClick={() => setIsTakeOrderModalOpen(true)}>Take Order</button>
+              <button onClick={() => setIsMakeOrderModalOpen(true)} disabled={!isConnected}>Make Order</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
+              <button onClick={() => setShowOrderbook(!showOrderbook)}>Show Orderbook</button>
+              <button onClick={() => setShowYieldcurve(!showYieldcurve)}>Show YieldCurve</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button disabled={true}>Show MY Orderbook</button>
+              <button disabled={true}>Show MY YieldCurve</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button disabled={true}>Show -all but me- Orderbook</button>
+              <button disabled={true}>Show -all but me- YieldCurve</button>
+            </div>
+          </div>
 
+
+
+
+{/* ORDERBOOK */}
+{showOrderbook && (<>
+<div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 border border-green-500">
           <div className="flex gap-2 md:gap-4 mt-6">
             <button disabled>USDC</button>
             <button onClick={() => setMarket("ETH")} className={market === "ETH" ? "buttonselected" : ""}>ETH</button>
             <button disabled>STRK</button>
           </div>
-
           <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4">
             {!advancedSelection && (
               <>
@@ -119,20 +163,24 @@ export default function OrderBookPage() {
             </div>
             <div className="w-full h-56"><OrderBookGraph buyOrders={orderBookData.buyOrders} sellOrders={orderBookData.sellOrders} /></div>
           </div>
+</div>
+</>)}
+
+{/* YEIDLCURVE */}
+{showYieldcurve && (<>
+<div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4 border border-green-500">
+  <div className="w-full h-56">
+    <YieldCurveGraph buyOrders={YieldCurveData} size={0} durationType="minimal"/>
+  </div>
+  <div className="w-full h-56">
+    <YieldCurveGraph buyOrders={YieldCurveData} size={0} durationType="maximal"/>
+  </div>
+  <div className="w-full h-56">
+    <YieldCurveGraph buyOrders={YieldCurveData} size={0} durationType="both"/>
+  </div>
+</div>
+</>)}
           
-          <div className="mt-8 flex flex-col gap-4 w-full max-w-md">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button onClick={() => setDepositWithdrawModalOpen(true)} disabled={!isConnected}>Deposit/Withdraw</button>
-                <button onClick={() => setIsManagePositionModalOpen(true)} disabled={!isConnected}>Manage Position</button>
-            </div>
-            <button onClick={() => setBestRateModalOpen(true)} disabled={!isConnected}>Market Lend/Borrow</button>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button onClick={() => setIsTakeOrderModalOpen(true)}>Take Order</button>
-                <button onClick={() => setIsMakeOrderModalOpen(true)} disabled={!isConnected}>Make Order</button>
-            </div>
-             <button><a href="https://docs.FixedLend.com/FixedLend/guide-to-use-the-app" className="block w-full h-full py-2 px-4">Read The Guide</a></button>
-          </div>
-          {!isConnected && <p className="mt-4 text-red-500 animate-pulse">Connect your wallet to use the app</p>}
         </main>
       </div>
     </>
