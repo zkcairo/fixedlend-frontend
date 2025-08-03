@@ -36,9 +36,9 @@ export default function Home() {
         <HeaderNoConnect />
         <main className="container mx-auto py-10 px-4 flex flex-col items-center text-center">
           <h1 className="text-6xl font-bold mt-20 tracking-widest">FixedLend</h1>
-          <p className="text-2xl mt-5 max-w-2xl">
-            A peer-to-peer lending app on Starknet.<br/>
-            Fixed APY, Fixed duration, loans.
+          <h2 className="text-4xl mt-5">The Yield Orderbook.</h2>
+          <p className="text-1xl max-w-2xl">
+            Let borrowers compete to give you the best fixed rates on Starknet.
           </p>
           <p className="text-2xl mt-5 max-w-2xl"><a href="https://docs.fixedlend.com/fixedlend/security/audits" target="_blank" rel="noopener noreferrer">Code is audited!</a></p>
 

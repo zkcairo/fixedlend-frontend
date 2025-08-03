@@ -67,6 +67,11 @@ a:hover {
     text-shadow: 0 0 8px #0f0;
 }
 
+b {
+    text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 15px #0f0;
+    letter-spacing: 0.05em;
+}
+
 /* --- Buttons --- */
 button {
     background-color: transparent;

@@ -83,19 +83,23 @@ export default function OrderBookPage() {
 
         <main className="container mx-auto py-10 px-4 flex flex-col items-center text-center mt-24 md:mt-12">
             <h1 className="text-5xl md:text-7xl font-bold tracking-widest">FixedLend</h1>
-            <h2 className="text-xl md:text-2xl mt-2">(Earn Page)</h2>
+            <h2 className="text-xl md:text-2xl mt-2">3 steps to a predictable yield in an unpredictable market.</h2>
 
-            <div className="w-full max-w-xl mt-12 text-left text-lg leading-relaxed">
-              <p>{">"} First, Deposit.</p>
-              <p>{">"} Then, Lend.</p>
-              <p>{">"} Only ETH is supported now.</p>
-              <p>{">"} (<a href="https://docs.fixedlend.com/fixedlend/main/lenders-guide" target="_blank">Guide</a>)</p>
-              {/* <p>{">"} To do so, click "Lend" and enter your duration, the best available APY is displayed to you,
-                accept it or not.</p> */}
+            <div className="w-full max-w-xl mt-4 text-left text-lg leading-relaxed">
+              <p><b>{">"} 1. Deposit:</b> <br/>
+              Securely deposit the ETH you want to put to work into the FixedLend protocol. (Currently, only ETH is supported.)</p>
               <br/>
-              {/* <p>{">"} The APY you get is not what you wanted?</p> */}
-              <p>{">"} Feeling like a pro trader?</p>
-              <p>{">"} Go to the market-maker interface.</p>
+              <p><b>{">"} 2. Create a Lend Offer:</b> <br/>
+              Choose the fixed APY you want and the loan duration. This is your offer to the market.
+              Either as a <b>One-Time Lend</b>, or as a <b>Recurring Lend</b> which automatically re-lists your offer when it is repaid.</p>
+              <br/>
+              <p><b>{">"} 3. Monitor your positions:</b> <br/>
+              Your offer is now live on the orderbook.
+              A borrower will match with it, your loan begins, and you'll start earning your fixed yield immediately. <br/>
+              <b>Track your earnings</b>, and disable the auto-renewal at anytime right from your <b>"Monitor Your Positions" dashboard</b>.</p>
+              <br/>
+              <p>{">"} (<a href="https://docs.fixedlend.com/fixedlend/main/lenders-guide" target="_blank">Here is a detailed guide of this page</a>)</p>
+              <p>{">"} Feeling like a pro trader? Go to the <a href="/app">"Market-Maker" Interface</a>.</p>
             </div>
 
             <div className="mt-12 w-full max-w-sm flex flex-col gap-4">
@@ -104,32 +108,32 @@ export default function OrderBookPage() {
                 disabled={!isConnected}
                 className="w-full"
               >
-                Deposit/Withdraw
+                1. Deposit/Withdraw
               </button>
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setBestRateModalOpen(true)}
                   disabled={!isConnected}
                 >
-                  Single Lend
+                  2. One Time Lend
                 </button>
                 <button
                   onClick={() => setRecurringModalOpen(true)}
                   disabled={!isConnected}
                 >
-                  Recurring Lend
+                  2. Recurring Lend
                 </button>
               </div>
               <button
                 onClick={() => setIsManagePositionModalOpen(true)}
                 disabled={!isConnected}
               >
-                Your Positions
+                3. Monitor your Positions
               </button>
-
+{/* 
               <button className="w-full mt-4">
-                <a href="/app" className="block w-full h-full">Go to the market-maker interface</a>
-              </button>
+                <a href="/app" className="block w-full h-full">Pro Market-Maker Interface</a>
+              </button> */}
             </div>
             {!isConnected && <p className="mt-4 text-red-500 animate-pulse">Connect your wallet to use the app</p>}
         </main>

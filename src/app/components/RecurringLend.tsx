@@ -102,8 +102,8 @@ function RecurringLendModal({ isOpen, onClose, account, tokenUsed, category, all
                     <p>{">"} By using this page, you <b>MAKE</b> an offer on FixedLend orderbook.</p>
                     <p>{">"} <a href="https://docs.fixedlend.com/fixedlend/main/lenders-guide#option-b-create-a-recurring-loan-offer" target="_blank">Here is a small guide to help you.</a></p>
                     <p>{">"} </p>
-                    <p>{">"} (We recommend 5days for duration and 11.5% APR).</p>
-                    <p>{">"} If you have more questions, ask the <a href="https://t.me/+x1dXX6x0A3MzNGU0" target="_blank">Telegram group</a>.</p>
+                    <p>{">"} (We recommend either 10days with 8.5%, or 3days with 7%).</p>
+                    <p>{">"} If you have more questions, ask them in the <a href="https://t.me/+x1dXX6x0A3MzNGU0" target="_blank">Telegram group</a>.</p>
                 </div>
                 <hr className="border-green-500/30 my-2" />
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
