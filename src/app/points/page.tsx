@@ -42,11 +42,11 @@ export default function Page() {
                 <h4 className="text-2xl mb-2 tracking-wider">How to Earn Points</h4>
                 <p>{">"} Earn points by repaying loans. The platform fee you pay is added to your point total. For more details, see the <a href="https://docs.FixedLend.com/FixedLend/point-program" target="_blank">point program guide</a>.</p>
               </div>
-
+{/* 
               <div>
                 <h4 className="text-2xl mb-2 tracking-wider">Become a Market Maker</h4>
                 <p>{">"} Sophisticated market makers wanted. If you can run bots to maintain offers within a given spread, DM me. A percentage of $FixedLend tokens is on offer. The more market makers, the better the platform.</p>
-              </div>
+              </div> */}
 
               <div>
                 <h4 className="text-2xl mb-2 tracking-wider">Disclaimer</h4>
