@@ -50,7 +50,7 @@ export default function Page() {
 
               <div>
                 <h4 className="text-2xl mb-2 tracking-wider">Disclaimer</h4>
-                <p>{">"} Participation in the points program does not constitute a contractual right to an airdrop or any other form of compensation. Please read the full <a href="https://github.com/zkcairo/FixedLend-contract/blob/main/readme.md" target="_blank">disclaimer here</a>.</p>
+                <p>{">"} Participation in the points program does not constitute a contractual right to an airdrop or any other form of compensation.</p>
               </div>
           </div>
 

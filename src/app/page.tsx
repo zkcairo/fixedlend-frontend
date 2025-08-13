@@ -60,7 +60,23 @@ export default function Home() {
             </p>
           </header>
 
-          <div className="w-full max-w-7xl mx-auto mt-12 flex flex-col lg:flex-row gap-8 items-start px-4">
+
+          {/* Where the yield comes from section */}
+          <section className="max-w-5xl mt-12 text-center leading-relaxed p-8 bg-slate-900/60 border border-slate-700 rounded-2xl shadow-lg">
+            <h4 className="text-3xl font-bold mb-6 tracking-wider">Where Does the Yield Come From?</h4>
+            <p className="mb-2">
+              Borrowers want to leverage their DeFi positions. In exchange, they are willing to pay a portion of their earned yield to lenders. For example, if they have access to a 10% APR position, they can pay you a fixed 7% and still make a profit.
+            </p>
+            <p className="mb-2">
+              Lenders simply collect this yield, in a fixed and predictable manner, without needing to research the best or latest DeFi strategies themselves.
+            </p>
+            <p>
+              The collateral's value is always pegged to the borrowed asset. This design makes price fluctuations between different assets irrelevant to the protocol's stability.
+            </p>
+          </section>
+
+
+          <div className="w-full max-w-7xl mx-auto mt-12 flex flex-col lg:flex-row gap-8 items-start px-4">            
             {/* Lenders section */}
             <section className="w-full lg:w-1/2 text-left text-lg leading-relaxed p-8 bg-slate-900/60 border border-slate-700 rounded-2xl shadow-lg">
               <h3 className="text-2xl font-bold mb-4">How Lenders Use FixedLend</h3>
@@ -124,20 +140,13 @@ export default function Home() {
               </p>
             </section>
           </div>
-          
-          {/* Where the yield comes from section */}
-          <section className="max-w-5xl mt-12 text-center leading-relaxed p-8 bg-slate-900/60 border border-slate-700 rounded-2xl shadow-lg">
-            <h4 className="text-3xl font-bold mb-6 tracking-wider">Where Does the Yield Come From?</h4>
-            <p className="mb-2">
-              Borrowers want to leverage their DeFi positions. In exchange, they are willing to pay a portion of their earned yield to lenders. For example, if they have access to a 10% APR position, they can pay you a fixed 7% and still make a profit.
-            </p>
-            <p className="mb-2">
-              Lenders simply collect this yield, in a fixed and predictable manner, without needing to research the best or latest DeFi strategies themselves.
-            </p>
-            <p>
-              The collateral's value is always pegged to the borrowed asset. This design makes price fluctuations between different assets irrelevant to the protocol's stability.
-            </p>
-          </section>
+
+          {/* Bottom CTA */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-10">
+            <a href="/earn" className="inline-flex items-center justify-center rounded-2xl px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-400 text-black font-semibold shadow-2xl hover:scale-[1.01] transition-transform">
+              Open the App
+            </a>
+          </div>
 
           {/* Platform statistics — DO NOT CHANGE THIS SECTION */}
           <section className="mt-12 text-center leading-relaxed p-8 bg-slate-900/60 border border-slate-700 rounded-2xl shadow-lg">
@@ -155,12 +164,7 @@ export default function Home() {
             </p>
           </section>
 
-          {/* Bottom CTA */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-10">
-            <a href="/earn" className="inline-flex items-center justify-center rounded-2xl px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-400 text-black font-semibold shadow-2xl hover:scale-[1.01] transition-transform">
-              Open the App
-            </a>
-          </div>
+
         </main>
         <Bottom />
       </div>
