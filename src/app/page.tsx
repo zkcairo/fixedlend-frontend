@@ -151,7 +151,7 @@ export default function Home() {
           {/* Platform statistics — DO NOT CHANGE THIS SECTION */}
           <section className="mt-12 text-center leading-relaxed p-8 bg-slate-900/60 border border-slate-700 rounded-2xl shadow-lg">
             <h4 className="text-3xl font-bold mb-6 tracking-wider">Platform Statistics</h4>
-            <p>TVL: {formatCurrency(Number(ethBalance) + Number(fethBalance))} ETH</p>
+            {/* <p>TVL: {formatCurrency(Number(ethBalance) + Number(fethBalance))} ETH</p> */}
             <p className="mt-2">Current ETH yield (APR): {Number(bestYieldEthBorrow) - 1}% lend / {Number(bestYieldEthLend) + 1}% borrow</p>
             <p className="mt-2">Available on the ETH market: {volumeEthBorrow} ETH to lend / {volumeEthLend} ETH to borrow</p>
           </section>

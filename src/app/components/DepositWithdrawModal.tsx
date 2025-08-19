@@ -5,12 +5,41 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Call } from "starknet";
 import spinner from "../../../public/assets/spinner.svg";
-import { CONTRACT_ADDRESS } from '@/app/utils/constant';
-import { prettyNameFromAddress } from "../utils/erc20";
-import { getAllLend, getAllCollateral } from "@/app/utils/erc20";
+import { CONTRACT_ADDRESS, ETH_ADDRESS } from '@/app/utils/constant';
+import { getAllBalance, prettyNameFromAddress, getAllLend, getAllCollateral, getDecimalsOfAsset } from "../utils/erc20";
 import { getErc20Balance, getProtocolBalance } from "../utils/fetch";
 import toast from "react-hot-toast";
 import { formatCurrency } from "../utils/format";
+import ChooseAsset from "./ChooseAsset";
+
+// --- Step 1: Define the new Child Component ---
+// (You can move this to its own file and import it)
+type CollateralBalanceRowProps = {
+  assetAddress: string;
+  accountAddress: string;
+};
+
+function CollateralBalanceRow({ assetAddress, accountAddress }: CollateralBalanceRowProps) {
+  // Hooks are now at the top level of THIS component, which is correct!
+  const walletBalance = getErc20Balance(assetAddress, accountAddress);
+  const protocolBalance = getProtocolBalance(assetAddress, accountAddress);
+  const assetName = prettyNameFromAddress(assetAddress);
+
+  return (
+    <>
+      <div className="flex justify-between mt-2">
+        <span>{assetName} in Wallet:</span>
+        <span>{formatCurrency(Number(walletBalance))}</span>
+      </div>
+      <div className="flex justify-between">
+        <span>{assetName} in Protocol:</span>
+        <span>{formatCurrency(Number(protocolBalance), 10 ** 18)}</span>
+      </div>
+    </>
+  );
+}
+// --- End of Child Component ---
+
 
 type Props = {
   isOpen: boolean;
@@ -26,7 +55,7 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
   
   const [inputAmount, setInputAmount] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Deposit");
-  const [choosenAsset, setChoosenAsset] = useState("ETH");
+  const [choosenAsset, setChoosenAsset] = useState(ETH_ADDRESS);
   const [loading, setLoading] = useState<boolean>(false);
   const [animate, setAnimate] = useState(false);
 
@@ -37,16 +66,18 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
   const choosenDecimalsLend = lendasset[1];
   const tokenNameLend = prettyNameFromAddress(choosenAssetLend);
 
-  const collateralAsset = getAllCollateral(tokenUsed)[0];
-  const choosenAssetCollateral = collateralAsset[0].toString();
-  const choosenDecimalsCollateral = collateralAsset[1];
-  const tokenNameCollateral = prettyNameFromAddress(choosenAssetCollateral);
+  const allCollaterals: any[] = getAllCollateral(tokenUsed);
+  const allBalancesCollaterals = getAllBalance(allCollaterals.map((value) => value[0]), account.address);
+  const filteredCollaterals = allCollaterals.filter((collateral, idx) => allBalancesCollaterals[idx] > 0);
 
-  // Balances
+  // Balances (for assets that are NOT in a loop)
   const account_balance_eth = formatCurrency(Number(getErc20Balance(choosenAssetLend, account.address)));
   const protocol_balance_eth = formatCurrency(Number(getProtocolBalance(choosenAssetLend, account.address)), 10**18);
-  const account_balance_collateral = formatCurrency(Number(getErc20Balance(choosenAssetCollateral, account.address)));
-  const protocol_balance_collateral = formatCurrency(Number(getProtocolBalance(choosenAssetCollateral, account.address)), 10**18);
+
+  // Balances (for the selected asset in the dropdown)
+  // We need to be careful here if 'choosenAsset' can change. Assuming it's a fixed address for now.
+  const account_balance_selected = formatCurrency(Number(getErc20Balance(choosenAsset, account.address)));
+  const protocol_balance_selected = formatCurrency(Number(getProtocolBalance(choosenAsset, account.address)), 10**18);
 
   useEffect(() => {
     if (isOpen) setAnimate(true);
@@ -63,8 +94,8 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
     let success = false;
     try {
       const functionName = activeTab === "Deposit" ? "deposit" : "withdraw";
-      const asset = choosenAsset === "ETH" ? choosenAssetLend : choosenAssetCollateral;
-      const decimals = choosenAsset === "ETH" ? choosenDecimalsLend : choosenDecimalsCollateral;
+      const asset = choosenAsset;
+      const decimals = Number(getDecimalsOfAsset(prettyNameFromAddress(choosenAsset)));
       const amount = BigInt(Math.floor(Number(inputAmount) * (10 ** Number(decimals))));
 
       let calls: Call[] = [];
@@ -97,7 +128,7 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
     }
   }
 
-  const isButtonDisabled = isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || Number(inputAmount) > (activeTab === "Deposit" ? (choosenAsset === "ETH" ? account_balance_eth : account_balance_collateral) : (choosenAsset === "ETH" ? protocol_balance_eth : protocol_balance_collateral));
+  const isButtonDisabled = isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || Number(inputAmount) > (activeTab === "Deposit" ? account_balance_selected : protocol_balance_selected);
 
   return (
     <GenericModal
@@ -126,24 +157,28 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
             <h3 className="text-xl tracking-wider mb-2">// BALANCES</h3>
             <div className="flex justify-between"><span>{tokenNameLend} in Wallet:</span><span>{account_balance_eth}</span></div>
             <div className="flex justify-between"><span>{tokenNameLend} in Protocol:</span><span>{protocol_balance_eth}</span></div>
-            {!disableBorrow && <>
-              <div className="flex justify-between mt-2"><span>{tokenNameCollateral} in Wallet:</span><span>{account_balance_collateral}</span></div>
-              <div className="flex justify-between"><span>{tokenNameCollateral} in Protocol:</span><span>{protocol_balance_collateral}</span></div>
-            </>}
+            
+            {/* --- Step 2: Use the new component in the loop --- */}
+            {!disableBorrow && filteredCollaterals.map((asset) => (
+              <CollateralBalanceRow 
+                key={asset[0]} // Using the asset address as a key
+                assetAddress={asset[0].toString()} 
+                accountAddress={account.address} 
+              />
+            ))}
         </div>
 
         {/* Action Panel */}
         <div className="border border-green-500/50 p-4 flex flex-col gap-4">
             <h3 className="text-xl tracking-wider">// ACTION</h3>
+              <ChooseAsset
+              type={disableBorrow ? "lend" : "all"}
+              baseAsset={"ETH"}
+              address={account.address}
+              above_choosenAsset={choosenAsset}
+              set_above_choosenAsset={setChoosenAsset} />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                <span className="flex-shrink-0">Asset to {activeTab.toLowerCase()}:</span>
-                <div className="flex gap-2">
-                    <button className={`flex-grow ${choosenAsset === "ETH" ? "buttonselected" : ""}`} onClick={() => setChoosenAsset("ETH")}>{tokenNameLend}</button>
-                    {!disableBorrow && (<button className={`flex-grow ${choosenAsset === "FETH" ? "buttonselected" : ""}`} onClick={() => setChoosenAsset("FETH")}>{tokenNameCollateral}</button>)}
-                </div>
-            </div>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                <label htmlFor="amount-input">Amount in {choosenAsset}:</label>
+                <label htmlFor="amount-input">Amount in {prettyNameFromAddress(choosenAsset)}:</label>
                 <input
                     id="amount-input"
                     type="text"
@@ -162,7 +197,7 @@ function MyContractExecutionModal({ isOpen, onClose, account, tokenUsed, categor
         title={isButtonDisabled ? "Please enter a valid amount" : `Execute ${activeTab}`}
         onClick={handleExecute}
       >
-        {loading ? "PROCESSING..." : `[ ${activeTab.toUpperCase()} ${choosenAsset} ]`}
+        {loading ? "PROCESSING..." : `[ ${activeTab.toUpperCase()} ${prettyNameFromAddress(choosenAsset)} ]`}
         {loading && <Image src={spinner} alt="loading" height={20} width={20} className="animate-spin" />}
       </button>
     </GenericModal>

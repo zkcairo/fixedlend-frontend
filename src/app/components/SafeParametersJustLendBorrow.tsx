@@ -1,6 +1,4 @@
 "use client";
-import { DisplayToken } from "./DisplayToken";
-import { getAllLend, getAllCollateral, getAllBalance, normalizeAmountLend, normalizeAmountBorrow, prettyNameFromAddress } from "@/app/utils/erc20";
 import { useState } from "react";
 import { VALUE_1PERCENT_APY } from "../utils/constant";
 

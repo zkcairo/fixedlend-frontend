@@ -1,7 +1,7 @@
 import Erc20Abi from "../abi/token.abi.json";
 import { useContractRead } from "@starknet-react/core";
 // Category
-import { ETH_CATEGORY, USDC_CATEGORY, STRK_CATEGORY } from './constant';
+import { ETH_CATEGORY, USDC_CATEGORY, STRK_CATEGORY, WSTETH_ADDRESS, WSTETH_DECIMALS } from './constant';
 // ETH
 import { ETH_ADDRESS, FETH_ADDRESS} from './constant';
 import { ETH_DECIMALS, FETH_DECIMALS } from './constant';
@@ -51,6 +51,7 @@ export const getAllCollateral = (address: string) => {
     if (address === "ETH") {
         return [
             [FETH_ADDRESS, FETH_DECIMALS],
+            [WSTETH_ADDRESS, WSTETH_DECIMALS],
         ];
     }
     // if (address === "USDC") {
@@ -117,6 +118,8 @@ export function prettyNameFromAddress(address_: string) {
             return "ETH";
         case FETH_ADDRESS:
             return "FETH";
+        case WSTETH_ADDRESS:
+            return "WSTETH";
         // USDC MARKET
         case USDC_ADDRESS:
             return "USDC";

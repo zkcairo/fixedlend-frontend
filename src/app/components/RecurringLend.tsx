@@ -13,7 +13,7 @@ import ChooseAsset from "./ChooseAsset";
 import SafetyBox from "./SafetyBox"; // Using the new combined SafetyBox
 import { matchBorrow, matchLend } from "../utils/matchMaking";
 import { getProtocolBalance } from "../utils/fetch";
-import { ETH_ADDRESS, FETH_ADDRESS } from "@/app/utils/constant";
+import { ETH_ADDRESS } from "@/app/utils/constant";
 
 type Props = { isOpen: boolean; onClose: () => void; account: any; tokenUsed: string; category: string; alloffers: any; disableBorrow: boolean; };
 
@@ -31,9 +31,7 @@ function RecurringLendModal({ isOpen, onClose, account, tokenUsed, category, all
     const isLend = activeTab === "Recurring lend";
 
     const protocol_balance_eth = Number(getProtocolBalance(ETH_ADDRESS, account.address));
-    const protocol_balance_feth = Number(getProtocolBalance(FETH_ADDRESS, account.address));
     const maxYouCanLend = protocol_balance_eth / 1e18;
-    const maxYouCanBorrow = 0.47 * protocol_balance_feth / 1e18; // Example LTV
 
     const { data: mylendingid_data, isLoading: mylendingid_loading } = useContractRead({ address: contractAddress, abi: MyAbi, functionName: "frontend_all_lend_offers_len", args: [], watch: true, });
     const { data: myborrowingid_data, isLoading: myborrowingid_loading } = useContractRead({ address: contractAddress, abi: MyAbi, functionName: "frontend_all_borrow_offers_len", args: [], watch: true, });
@@ -81,7 +79,7 @@ function RecurringLendModal({ isOpen, onClose, account, tokenUsed, category, all
         }
     }
 
-    const toolarge = (isLend ? Number(inputAmount) > maxYouCanLend : Number(inputAmount) > maxYouCanBorrow);
+    const toolarge = Number(inputAmount) > maxYouCanLend;
     const isButtonDisabled = isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || !acceptDisclaimer || choosenAsset === "" || toolarge || (maximalDuration < 24) || obtainedYield === "";
 
     return (
@@ -108,7 +106,7 @@ function RecurringLendModal({ isOpen, onClose, account, tokenUsed, category, all
                 <hr className="border-green-500/30 my-2" />
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label>Max you can {isLend ? "lend" : "borrow"}:</label>
-                    <span>{isLend ? maxYouCanLend.toFixed(18) : maxYouCanBorrow.toFixed(18)} {tokenUsed}</span>
+                    <span>{maxYouCanLend.toFixed(18)} {tokenUsed}</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] items-center gap-4">
                     <label htmlFor="amount">Amount ({tokenUsed}):</label>

@@ -16,8 +16,17 @@ export const STRK_CATEGORY = "36185027886661312136973227830950701056231072153315
 export const ETH_ADDRESS: string = "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7".toLowerCase();
 export const ETH_DECIMALS: number = 18;
 
+// OLD FETH
 export const FETH_ADDRESS: string = "0x030bbf27c4e9e698dfb5c8df4efe712985444603c7f721144416227bfd7c10c5".toLowerCase();
 export const FETH_DECIMALS: number = 18;
+export const FETH_PRICE: number = 0.97;
+export const FETH_LTV: number = 0.5;
+
+// WSTETH
+export const WSTETH_ADDRESS: string = "0x0057912720381af14b0e5c87aa4718ed5e527eab60b3801ebf702ab09139e38b".toLowerCase();
+export const WSTETH_DECIMALS: number = 18;
+export const WSTETH_PRICE: number = 1.2;
+export const WSTETH_LTV: number = 0.75;
 
 
 

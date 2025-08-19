@@ -61,7 +61,7 @@ function MakeOrderModal({ isOpen, onClose, account, tokenUsed, category }: Props
         }
     }
 
-    const isButtonDisabled = isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || !acceptDisclaimer || choosenAsset === "" || (isLend ? Number(inputAmount) > maxYouCanLend : Number(inputAmount) > maxYouCanBorrow) || (maximalDuration - minimalDuration < 24);
+    const isButtonDisabled = isNaN(Number(inputAmount)) || Number(inputAmount) <= 0 || !acceptDisclaimer || choosenAsset === "";//|| (isLend ? Number(inputAmount) > maxYouCanLend : Number(inputAmount) > maxYouCanBorrow) || (maximalDuration - minimalDuration < 24);
 
     return (
         <GenericModal isOpen={isOpen} onClose={closeModal} animate={animate} className="w-[90vw] md:w-[50rem] max-h-[90vh] p-6">

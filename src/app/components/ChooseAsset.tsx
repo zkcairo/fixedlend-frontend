@@ -4,7 +4,7 @@ import { getAllLend, getAllCollateral, getAllBalance, normalizeAmountLend, norma
 import { useState } from "react";
 
 type Props = {
-  type: "lend" | "borrow";
+  type: "lend" | "borrow" | "all";
   baseAsset: string;
   address: string;
   above_choosenAsset: any;
@@ -32,13 +32,12 @@ const ChooseAsset = ({ type, baseAsset, address, above_choosenAsset, set_above_c
   return (
     <div className="grid grid-cols-2 gap-x-5">
       <div className="flex flex-col justify-center">
-      <label>{type === "lend" ? "Choose the asset you want to lend" : "Choose your collateral"}
-        {type === "lend" ? "" :
-        (<><br/><h2><a target="_blank" href="https://docs.FixedLend.com/FixedLend/accepted-collaterals"><u>List of accepted collateral</u></a></h2></>)}
+      <label>{type === "all" ? "Choose your asset" : type === "lend" ? "Choose the asset you want to lend" : "Choose your collateral"}
+        <br/><h2><a target="_blank" href="https://docs.FixedLend.com/FixedLend/accepted-collaterals"><u>List of all assets</u></a></h2>
       </label>
       </div>
       <div className="flex grid-col justify-center">
-        {(type === "lend" ? filteredLend : filteredCollaterals).map((tab) => (
+        {(type === "all" ? filteredLend.concat(filteredCollaterals) : type === "lend" ? filteredLend : filteredCollaterals).map((tab) => (
           <button
             key={tab[0]}
             className={`text-base px-4 py-2 ${choosenAsset === tab[0] ? "buttonselected" : "bg-base"} rounded`}
@@ -47,8 +46,8 @@ const ChooseAsset = ({ type, baseAsset, address, above_choosenAsset, set_above_c
             <DisplayToken address={tab[0]} />
           </button>
         ))}
-        {(type === "lend" ? filteredLend : filteredCollaterals).length == 0 && (
-          <div className="text-center text-lg">Currently, you do not have any {type === "lend" ? "lendable" : "collateral"}.</div>
+        {(type === "all" ? filteredLend.concat(filteredCollaterals) : type === "lend" ? filteredLend : filteredCollaterals).length == 0 && (
+          <div className="text-center text-lg">Currently, you do not have any {type === "all" ? "accepted assets" : type === "lend" ? "lendable" : "collateral"}.</div>
         )}
       </div>
     </div>
