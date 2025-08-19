@@ -154,10 +154,12 @@ export function normalizeAmountBorrow(value: any, decimals: any) {
 
 export const getDecimalsOfAsset = (asset: string) => {
     switch (asset) {
-        case "FETH":
-            return ETH_DECIMALS;
         case "ETH":
             return FETH_DECIMALS;
+        case "FETH":
+            return ETH_DECIMALS;
+        case "WSTETH":
+            return WSTETH_DECIMALS;
         case "USDC":
             return USDC_DECIMALS;
         case "USDT":
